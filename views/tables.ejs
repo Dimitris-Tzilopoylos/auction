@@ -1,0 +1,152 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/sidebar.ejs') %>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <%- include('partials/admin-navbar.ejs') %>
+       
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800">Manage Products</h1>
+                    <div id="loading" style="display:none;margin-top:160px;justify-content:center;align-items:center;">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                          </div>
+                    </div>
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary" style="cursor:pointer" id="toggleForm">Create Product</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive" id="productTable">
+                                
+                                
+                                <% if(productError ){ %>
+                                     
+                                      <p class="alert alert-danger my-2" id=""><%= productError %></p>  
+                                    
+                                <% } %>
+                            </div>
+                            <form action="/dashboard/create-product" id="productForm" class="row w-50" style="display:none;margin:0 auto;" method="POST">
+                                <div class="col-md-12">
+                                    <h4 class="text-center">Create Product</h4>
+                                    <hr/>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="name">Product Name</label>
+                                    <input class="form-control" type="text" name="name" id="name" />
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="supercategory">Super Category </label>
+                                    <select name="supercategory" id="supercategory" class="form-control">
+                                        <option value=""></option>
+                                        <% for(let s of supercategories){ %> 
+                                            <option value="<%= s._id %>"><%= s.name %></option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="category">Category</label>
+                                    <select name="category" id="category" class="form-control" disabled="true">
+                                        <option value="" class=""></option>
+                                        <% for(let s of categories){ %> 
+                                            <option value="<%= s._id %>" class="class-<%= s.supercategory %>" style="display:none"><%= s.name %></option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="name">Status</label>
+                                    <select name="status" id="status" class="form-control"  >
+                                        <option value="" class=""></option>
+                                        <option value="NEW" class="">NEW</option>
+                                        <option value="READY" class="">READY</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="bid_date" class="col-12 col-form-label">Start Date</label>
+                                    <div class="col-12">
+                                      <input class="form-control" id="bid_date" name="bid_date" type="datetime-local" value="<%= new Date().toISOString() %>"  >
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="bid_end_date" class="col-12 col-form-label">End Date</label>
+                                    <div class="col-12">
+                                      <input id="bid_end_date" name="bid_end_date" class="form-control" type="datetime-local" value="<%= new Date(new Date().getTime()+(1*24*60*60*1000)).toISOString() %>"  >
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <textarea name="description" id="description" cols="30" rows="10" class="form-control" placeholder="Product Description"></textarea>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="start_price" class="col-12 col-form-label">Starting Price</label>
+                                    <input type="number" name="start_price" id="start_price" step="0.01" class="form-control" min="0" max="1000000000000">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="currency" class="col-12 col-form-label">Currency</label>
+                                     <select name="currency" id="currency" class="form-control">
+                                         <option value="EUR"><b>&euro;</b></option>
+                                         <option value="GBP"><b>£</b></option>
+                                         <option value="RON"><b>lei</b></option>
+                                         <option value="SEK"><b>kr</b></option>
+                                         <option value="PLN"><b>zł</b></option>
+                                     </select>
+                                </div>
+                                <div class="col-md-12 form-group my-2">
+                                    <button class="btn-block btn-primary w-100" type="submit">Create</button>
+                                </div>
+                            </form>
+                            
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+
+            <script>
+                var toggleForm = document.getElementById('toggleForm')
+                var productTable = document.getElementById('productTable')
+                var productForm = document.getElementById('productForm')
+                var selectSuper = document.getElementById('supercategory')
+                var selectCat = document.getElementById('category')
+                var status = document.getElementById('status')
+                toggleForm.addEventListener('click',function(event){
+                    toggleForm.innerHTML = productForm.style.display != 'none' ? 'Create Product' : 'Show Products'
+                    let swapper = productTable.style.display 
+                    productTable.style.display = productForm.style.display 
+                    productForm.style.display = swapper 
+                    
+                })
+
+                selectSuper.addEventListener('change',function(e){
+                   
+                    if(this.value !== '') {
+                        selectCat.disabled = false
+                        status.disabled = false 
+                    } else {
+                        selectCat.disabled = true 
+                        status.disabled = true 
+                        return
+                    }
+                    for(let option of selectCat.children){
+                        if(option.className == `class-${this.value}`) {option.style.display = 'block'}
+                        else option.style.display = 'none'
+                    }
+                    if(selectCat.value) selectCat.value = ''
+                })
+
+            </script>
+            <script src="/js/ajax/apf.js"></script>
+            <script>
+                loadDoc()
+            </script>
+            <%- include('partials/footer.ejs') %>

@@ -1,0 +1,38 @@
+<%- include('../partials/header.ejs') %>
+<%- include('../partials/sidebar.ejs') %>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <%- include('../partials/admin-navbar.ejs') %>
+                <%- include('partials/hero.ejs') %>
+        <section class="page-section bg-light" id="portfolio">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading text-uppercase">Categories</h2>
+                    <h3 class="section-subheading text-muted">Find what you are looking for</h3>
+                </div>
+                <div class="row">
+                    <% for(let s of categories) { %>
+                    <div class="col-md-6 my-4">
+                        <div class="portfolio-item shadow p-2">
+                            <a class="portfolio-link"  href="/category/<%= s.name %>">
+                                <img class="img-fluid" src="/<%= s.category_image %>" alt="<%= s.name %>" style="width:100%"/>
+                            </a>
+                            <div class="portfolio-caption my-2 p-2">
+                                <div class="portfolio-caption-heading text-primary font-weight-bold" style="display:flex;justify-content:space-between;align-items:center">
+                                    <a  href="/category/<%= s.name %>"  class="btn btn-primary"><%= s.name %> </a></div>
+                                <hr>
+                                <div class="portfolio-caption-subheading text-muted"><%= s.description %></div>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+        </section>
+</div>
+        <script src="/js/ajax/apf.js"></script>
+        <%- include('../partials/footer.ejs') %>

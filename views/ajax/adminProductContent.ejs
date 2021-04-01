@@ -1,0 +1,83 @@
+
+<% if(obj && obj.length == 0 ){ %>
+
+    <p class="alert alert-danger my-2" id="">You haven't added any Products yet</p>
+
+<% } %>
+<p class="mb-4">Your products <sup class="badge badge-primary"><%= total %></sup></p>
+<table class="table table-bordered"   width="100%" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Supercategory</th>
+            <th>Category</th>
+            <th>Starting Price</th>
+            <th>Highest Price</th>
+            <th>Status</th>
+            <th>Start date</th>
+            <th>End date</th>
+            <th>Sold</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <% if(obj && obj.length > 100 ){ %>
+    <tfoot>
+        <tr>
+            <th>Name</th>
+            <th>Supercategory</th>
+            <th>Category</th>
+            <th>Starting Price</th>
+            <th>Highest Price</th>
+            <th>Status</th>
+            <th>Start date</th>
+            <th>End date</th>
+            <th>Sold</th>
+            <th>Actions</th>
+        </tr>
+    </tfoot>
+    <% } %>
+    <tbody>
+        <% for(let i=0;i<obj.length;i++){ %>
+        <tr>
+            <td><%= obj[i].name %></td>
+            <td><p class="badge badge-primary"><%= obj[i].supercategory.name %></p></td>
+            <td><p class="badge badge-success"><%= obj[i].category.name %></p></td>
+            <td><p class="text-danger"><%= obj[i].start_price %> <span class="text-primary"><%= obj[i].currency.symbol %> </span></p></td>
+            <td><p class="text-success"><%= obj[i].end_price %> <span class="text-primary"><%= obj[i].currency.symbol %> </span></p></td>
+            <td><p class="badge badge-<%= obj[i].status == 'NEW' ? 'info' : 'dark' %>"><%= obj[i].status %></p></td>
+            <td><%= obj[i].bid_date && obj[i].bid_date.toUTCString() %></td>
+            <td><%= obj[i].bid_date && obj[i].bid_end_date.toUTCString() %></td>
+            <td><% if(obj[i].sold.user){ %> <span class="text-success">YES</span> <% }else{ %>  <span class="text-danger">NO</span>  <% } %></td>
+            <td><a href="/dashboard/product/<%=obj[i]._id%>" class="btn btn-block btn-outline-primary">Actions</a></td>
+        </tr>
+        <% } %>
+    </tbody>
+</table>
+    <div class="col-md-12" style="display:flex;justify-content:center;">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+              <% if(currentPage > 1){ %>
+              <li class="page-item">
+                <a class="page-link text-info" href="#products" aria-label="Previous" onclick="loadDoc(1,12)">
+                  <span aria-hidden="true">&laquo;</span>
+                  <span class="sr-only">Previous</span>
+                </a>
+              </li>
+              <li class="page-item text-info"><a class="page-link text-info" href="#products" onclick="loadDoc( '<%= currentPage - 1 %>',12)" ><%= currentPage-1 %></a></li>
+              <% } %>
+              <% if(total > view){ %>
+              <li class="page-item text-info"><a class="page-link text-info active" href="#products"><%= currentPage %></a></li>
+              <% } %>
+              <% if(currentPage < limit){ %>
+              <li class="page-item text-info"><a class="page-link text-info" href="#products" onclick="loadDoc('<%= currentPage + 1 %>',12)"><%= currentPage+1 %></a></li>
+              <li class="page-item text-info">
+                <a class="page-link text-info" href="#products" aria-label="Next" onclick="loadDoc('<%= limit %>',12)">
+                  <span aria-hidden="true">&raquo;</span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </li>
+              <% } %>
+              
+            </ul>
+          </nav>
+    </div>

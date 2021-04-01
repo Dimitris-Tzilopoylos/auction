@@ -1,0 +1,12 @@
+<div style="background:navy;margin-top:-30px;box-shadow:1px 3px 10px #111" class="jumbotron bg-cover text-white">
+    <div class="container py-5 text-center">
+        <h1 class="display-4 font-weight-bold text-primary" style="font-family:fantasy"><span class="text-success" >e</span> <span class="text-light"> - </span> B<span class="text-danger">i</span><span class="text-warning">d</span></h1>
+        <% if(!isAuthenticated){ %>
+            <p class="font-italic mb-0">Sign up <a href="/register" class="text-success">Here</a></p>
+            <a href="/login" role="button" class="my-4 btn btn-primary px-5 shadow-sm">Log in</a>
+        <% }else{ %>
+            <p class="font-italic mb-0">Are you having fun <span  class="text-success" style="font-family:fantasy"><%= user.name+" "+user.last_name %> </span><span class='text-warning' style="font-family:fantasy"> ?</span></p>
+            <a href="/dashboard" role="button" class="my-4 btn btn-primary px-5 shadow-sm">Dashboard <i class="fas fa-list"></i></a>
+        <% } %>
+    </div>
+</div>

@@ -1,0 +1,131 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/sidebar.ejs') %>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <%- include('partials/admin-navbar.ejs') %>
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800"><%= product.name %></h1>
+                    <p class="mb-4"> </p>
+
+                    <!-- Content Row -->
+                    <div class="row">
+
+                        <div class="col-xl-6 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Last Bid By:
+                                            </div>
+                                            <% if(bids && bids.length > 0 ){ %>
+                                            <div class="  mb-0 font-weight-bold text-gray-800" id="last_bidder"><%= bids[bids.length-1].user.name + " " + bids[bids.length-1].user.last_name  %></div>
+                                            <div class="mb-0 font-weight-bold text-gray-700" style="font-size:10px" id="last_bidder_date"><%= bids[bids.length-1].createdAt.toUTCString()  %></div>
+                                            <% }else{ %>
+                                                <div class="  mb-0 font-weight-bold text-gray-800" id="last_bidder"></div>
+                                                <div class="mb-0 font-weight-bold text-gray-700" style="font-size:10px" id="last_bidder_date"></div>
+                                            <% } %>
+                                        </div>
+                                        <% if(bids && bids.length > 0 ){ %>
+                                        <div class="col-auto">
+                                            <img width="80" height="80" class="img-fluid" style="border-radius:50%;" src="/<%= bids[bids.length-1].user.profile_img %>" alt="" id="last_bidder_profile_img">
+                                        </div>
+                                        <% }else{ %>
+                                          <div class="col-auto">
+                                            <img width="80" height="80" class="img-fluid" src="" style="display:none;border-radius:50%" alt="" id="last_bidder_profile_img">
+                                            <!-- <i class="fas fa-user"></i> -->
+                                          </div>
+                                        <% } %>
+                      
+                                    </div>
+                                </div>
+                            </div>
+                          </div> 
+                          <div class="col-xl-6 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Current Price:
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800"><span><span id="evaluate"><%= product.end_price %></span> <%=product.currency.symbol %> (<span class="text-info"><%= product.currency.iso %>)</span></span></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          </div>
+                        
+                          
+                        <div class="col-xl-12 col-md-12">
+
+                            <!-- Area Chart -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Last 10 bids</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-area">
+                                        <canvas id="myAreaChart"></canvas>
+                                    </div>
+                                    <hr>
+                                    
+                                </div>
+                            </div>
+ 
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+            <script src="/vendor/chart.js/Chart.min.js" ></script>
+            <script src="/js/socket.io.js"></script>
+            <script src="/js/socket.js"></script>
+            <script>
+                 
+                
+                <% let bidChartData = JSON.stringify(bids) %>
+                bidGlobal = setGlobalBid(<%-bidChartData %>)
+                
+                function toggleDetails(){
+                  var toggleBtn = document.getElementById("toggleBtnDetails")
+                  var con = document.getElementById('detail-cards-container')
+                    if(con.style.display == 'none'){
+                      con.style.display = 'flex'
+                      toggleBtn.classList.remove('btn-primary')
+                      toggleBtn.classList.add('btn-danger')
+                      toggleBtn.innerHTML = '<i class="fa fa-bars fa-sm text-white-50"></i> Hide Details'
+                    } 
+                    else {
+                      con.style.display = "none"
+                      toggleBtn.classList.remove('btn-danger')
+                      toggleBtn.classList.add('btn-primary')
+                      toggleBtn.innerHTML = '<i class="fa fa-bars fa-sm text-white-50"></i> Show Details'
+                    }
+                }
+                function toggleBidField(){
+                    var bidField = document.getElementById('showBid')
+                    if(bidField.style.display == 'none') bidField.style.display = 'flex'
+                    else bidField.style.display = "none"
+                }
+                joinProduct('<%= product._id %>')
+                disableBtnSinceLastBid("<%= last_bid %>")
+                setChart(bidGlobal.labels,bidGlobal.data,bidGlobal.currency)
+            </script>
+<%- include('partials/footer.ejs') %>
+ 

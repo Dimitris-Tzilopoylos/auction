@@ -1,0 +1,74 @@
+<%- include('../partials/header.ejs') %>
+<%- include('../partials/sidebar.ejs') %>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <%- include('../partials/admin-navbar.ejs') %>
+                <%- include('partials/hero.ejs') %>
+        <section class="page-section bg-light" id="portfolio">
+            <div class="container">
+                <!-- <div class="text-center">
+                    <h2 class="section-heading text-uppercase">Super Categories</h2>
+                     <hr>
+                </div> -->
+                <div class="row" id="supercategories">
+                    <% for(let s of supercategories_) { %>
+                    <div class="col-md-6 my-4">
+                        <div class="portfolio-item shadow p-2">
+                            <a class="portfolio-link" data-toggle="modal" href="#super-<%= s._id %>" onclick="loadCategories('<%= s._id%>','<%= s.name%>')">
+                                <img class="img-fluid" src="/<%= s.supercategory_image %>" alt="<%= s.name %>" />
+                            </a>
+                            <div class="portfolio-caption my-2 p-2">
+                                <div class="portfolio-caption-heading text-primary font-weight-bold" style="display:flex;justify-content:space-between;align-items:center">
+                                    <%= s.name %> 
+                                    <a data-toggle="modal" href="#super-<%= s._id %>" onclick="loadCategories('<%= s._id%>','<%= s.name%>')" class="btn btn-primary">Categories</a></div>
+                                <hr>
+                                <div class="portfolio-caption-subheading text-muted"><%= s.description %></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portfolio-modal modal fade" id="super-<%=s._id%>" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="close-modal" data-dismiss="modal"></div>
+                                <div class="container">
+                                    <div class="row justify-content-center">
+                                        <div class="col-lg-12">
+                                            <div class="modal-body">
+                                                <!-- Project Details Go Here-->
+                                                <h2 class="text-uppercase text-center"><%= s.name %></h2>
+                                                <p class="item-intro text-muted text-center">Categories</p>
+                                                <img class="img-fluid d-block mx-auto shadow" src="/<%= s.supercategory_image %>" alt="<%= s.name %>" />
+                                                <p class="text-center" style="word-break:break-word"><%= s.description %></p>
+                                                <div class="container">
+                                                    <div id="loading" style="display:none;margin-top:20px;justify-content:center;align-items:center;">
+                                                        <div class="spinner-border" role="status">
+                                                            <span class="sr-only">Loading...</span>
+                                                          </div>
+                                                    </div>
+                                                    <div class="row" id="categories-<%= s.name %>">
+                                                        
+                                                    </div>
+                                                </div>
+                                                <button class="btn btn-primary" data-dismiss="modal" type="button">
+                                                    <i class="fas fa-times mr-1"></i>
+                                                    Close
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+        </section>
+</div>
+        <script src="/js/ajax/apf.js"></script>
+ 
+        <%- include('../partials/footer.ejs') %>

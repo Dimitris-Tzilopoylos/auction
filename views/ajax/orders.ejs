@@ -1,0 +1,75 @@
+
+<% if(obj && obj.length == 0 ){ %>
+
+    <p class="alert alert-danger my-2" id="">You haven't any Orders yet</p>
+
+<% }else{ %>
+<p class="my-4">Your orders <sup class="badge badge-primary p-1"><%= total %></sup></p>
+<table class="table table-bordered"   width="100%" cellspacing="0">
+    <thead>
+        <tr>
+            <th>OrderId</th>
+            <th>Product</th>
+            <th>From</th>
+            <th>Price</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <% if(obj && obj.length > 100 ){ %>
+    <tfoot>
+        <tr>
+            <th>OrderId</th>
+            <th>Product</th>
+            <th>From</th>
+            <th>Price</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </tfoot>
+    <% } %>
+    <tbody>
+        <% for(let i=0;i<obj.length;i++){ %>
+        <tr>
+            <td><%= obj[i]._id %></td>
+            <td><%= obj[i].product && obj[i].product.name %></td>
+            <td><a href="javascript:void(0)" onclick="loadUserDetails('<%= obj[i].from.name %>','<%= obj[i].from.last_name %>','<%= obj[i].from.city %>','<%= obj[i].from.country %>','<%= obj[i].from.phone %>','<%= obj[i].from.mobile %>','<%= obj[i].from.email %>','<%= obj[i].from.profile_img %>')"><%= obj[i].from.name+" "+obj[i].from.last_name %></a></td>
+            <td><p class="badge badge-success"><%= obj[i].price+" "+obj[i].currency.symbol+" ("+obj[i].currency.iso+ ")" %></p></td>
+            <td><p  ><%= new Date(obj[i].date).toUTCString() %> </td>
+            <td><% if(obj[i].status !== "completed"){ %> <span class="badge badge-danger font-weight-bold"><%= obj[i].status %></span> <% }else{ %>  <span class="badge badge-success"><%= obj[i].status %></span>  <% } %></td>
+            <td><a href="/dashboard/order/<%=obj[i]._id%>" class="btn btn-block btn-outline-primary shadow-sm">Actions</a></td>
+        </tr>
+        <% } %>
+    </tbody>
+</table>
+<% } %>
+<div class="col-md-12" style="display:flex;justify-content:center;">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          <% if(currentPage > 1){ %>
+          <li class="page-item">
+            <a class="page-link text-info" href="#products" aria-label="Previous" onclick="loadOrders(1,12)">
+              <span aria-hidden="true">&laquo;</span>
+              <span class="sr-only">Previous</span>
+            </a>
+          </li>
+          <li class="page-item text-info"><a class="page-link text-info" href="#products" onclick="loadOrders('<%= currentPage - 1 %>',12)" ><%= currentPage-1 %></a></li>
+          <% } %>
+          <% if(total > view){ %>
+          <li class="page-item text-info"><a class="page-link text-info active" href="#products"><%= currentPage %></a></li>
+          <% } %>
+          <% if(currentPage < limit){ %>
+          <li class="page-item text-info"><a class="page-link text-info" href="#products" onclick="loadOrders('<%= currentPage + 1 %>',12)"><%= currentPage+1 %></a></li>
+          <li class="page-item text-info">
+            <a class="page-link text-info" href="#products" aria-label="Next" onclick="loadOrders('<%= limit %>',12)">
+              <span aria-hidden="true">&raquo;</span>
+              <span class="sr-only">Next</span>
+            </a>
+          </li>
+          <% } %>
+          
+        </ul>
+      </nav>
+</div>

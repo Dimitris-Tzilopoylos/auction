@@ -1,0 +1,75 @@
+<div class="row">
+    <% if(obj && obj.length  == 0 ){ %>
+        <p class="alert alert-danger">No products for this category</p>
+    <% }else{ %>
+        <div class="col-md-12">
+            <p class="text-right">
+                Products: <span style="color:#456"><%= total %> </span>
+            </p>
+            
+            <hr/>
+        </div>
+        <% for(let product of obj){ %>
+            <div class="col-md-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex bg-light" style="justify-content:center;align-items:center;flex-wrap:wrap;">
+                        <img src="/<%= product.user.profile_img %>" style="width:100px;height:100px;border-radius:50%" class="img-fluid shadow mr-5" alt="">
+                        <p class="text-center font-weight-bold my-4"> <span class="text-info"><a class="text-dark" href="/product/bid/<%= product._id %>"><%= product.name %></a></span> <span class="badge badge-success"><%= product.status %></span></p>
+                        <p class="text-center my-2"> <hr> By: <%= `${product.user.name} ${product.user.last_name}` %></p>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center">
+                            <% for(let i=0;i<product.images.length;i++){ %>
+                                <% if(!isAuthenticated){ %>
+                                    <a data-toggle="modal" href="#loginModal"  > 
+                                        <img class="img-fluid  shadow" style="width: 25rem;"src="<%= product.images[i] %>" alt="">
+                                    </a>
+                                <% }else{ %>
+                                    <a href="/product/bid/<%= product._id %>" >
+                                        <img class="img-fluid  shadow" style="width: 25rem;"src="<%= product.images[i] %>" alt="">
+                                    </a>
+                                <% } %>
+                            <% } %>
+                            <p class="my-4">Starting Price: <span class="text-info"><%= product.start_price %> <%= product.currency.symbol %></span> <br/>Highest Price: <span class="text-info"><%= product.end_price %> <%= product.currency.symbol %></span></p>
+                            <p>From: <span class="text-info"><%= product.bid_date ? product.bid_date.toUTCString() : 'Not set' %></span><br/> To:<span class="text-info"> <%= product.bid_end_date ? product.bid_end_date.toUTCString() : 'Not set' %></span></p>
+                            <% if(!isAuthenticated){ %>
+                                
+                                <a data-toggle="modal" href="#loginModal" class="btn btn-outline-dark btn-block"><i class="fa fa-eye"></i></a>
+                            <% }else{ %> 
+                            <a href="/product/bid/<%= product._id %>" class="btn btn-outline-dark btn-block"><i class="fa fa-eye"></i></a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+    <% } %>
+    <div class="col-md-12" style="display:flex;justify-content:center;">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+              <% if(currentPage > 1){ %>
+              <li class="page-item">
+                <a class="page-link text-info" href="#products" aria-label="Previous" onclick="loadProducts('<%= category_id %>',1,12)">
+                  <span aria-hidden="true">&laquo;</span>
+                  <span class="sr-only">Previous</span>
+                </a>
+              </li>
+              <li class="page-item text-info"><a class="page-link text-info" href="#products" onclick="loadProducts('<%= category_id %>','<%= currentPage - 1 %>',12)" ><%= currentPage-1 %></a></li>
+              <% } %>
+              <% if(total > view){ %>
+              <li class="page-item text-info"><a class="page-link text-info active" href="#products"><%= currentPage %></a></li>
+              <% } %>
+              <% if(currentPage < limit){ %>
+              <li class="page-item text-info"><a class="page-link text-info" href="#products" onclick="loadProducts('<%= category_id %>','<%= currentPage + 1 %>',12)"><%= currentPage+1 %></a></li>
+              <li class="page-item text-info">
+                <a class="page-link text-info" href="#products" aria-label="Next" onclick="loadProducts('<%= category_id %>','<%= limit %>',12)">
+                  <span aria-hidden="true">&raquo;</span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </li>
+              <% } %>
+              
+            </ul>
+          </nav>
+    </div>
+</div>

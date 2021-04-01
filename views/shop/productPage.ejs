@@ -1,0 +1,27 @@
+<%- include('../partials/header.ejs') %>
+<%- include('../partials/sidebar.ejs') %>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <%- include('../partials/admin-navbar.ejs') %>
+                <%- include('partials/hero.ejs') %>
+<div class="container">
+    <section class="page-section" id="services">
+        <div id="loading" style="display:none;margin-top:160px;justify-content:center;align-items:center;">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <div id="products"></div>
+    </section>
+</div>
+</div>
+ 
+<script src="/js/ajax/apf.js"></script>
+<script>
+    loadProducts('<%= category._id %>',1,12)
+</script>
+<%- include('../partials/footer.ejs') %>

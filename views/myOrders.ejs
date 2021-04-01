@@ -1,0 +1,96 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/sidebar.ejs') %>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <%- include('partials/admin-navbar.ejs') %>
+       
+                <!-- Begin Page Content -->
+                <div class="container-fluid" style="position:relative">
+
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800">Manage Orders</h1>
+                    
+                    <div id="loading" style="display:none;margin-top:160px;justify-content:center;align-items:center;position:absolute;top:-160px;left:50%;z-index:10">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                          </div>
+                    </div>
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                           
+                                <div class="row">
+                                     
+                                    <% if(orders && orders.length > 0){ %>
+                                        <% for(o of orders){ %>
+                                            <div class="col-md-1">
+                                                <p class="badge badge-outline badge-primary shadow-sm p-2" id="<%= o %>" style="cursor:pointer" onclick="loadOrders(1,24,'<%= 0 %>')"><%= o %></p>    
+                                            </div>
+                                            
+                                        <% } %>
+                                    <% } %>
+                                </div>
+                            </div>
+                       
+                        <div class="card-body">
+                            <div class="table-responsive" id="orderTable"></div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+            <a href="#userDetailsModal" data-toggle="modal" id="showModal"></a>
+            <div class="modal fade" id="userDetailsModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="close-modal" data-dismiss="modal" style="display:flex;width: 100%;justify-content:flex-end;padding:10px"><i class="fa fa-times"></i></div>
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-md-12 offset-md-12">
+                                    <div class="modal-body">
+                                        <!-- Project Details Go Here-->
+                                        <div class="my-2 d-flex" style="justify-content:space-between;align-items:center;">
+                                            <img id="profile_img" src="" class="img-fluid shadow" style="width:100px;height:100px;border-radius:50%;" alt="">
+                                            <h6 class="text-uppercase text-primary font-weight-bold" id="name"> </h6>
+                                        </div>
+                                        <hr>
+                                        <p class="text-muted">User details</p>
+                                        <ul class="list-group" style="background:#ddd;color:#111;font-weight:400;text-align:center">
+                                            <li class="list-group-item" id="city"></li>
+                                            <li class="list-group-item" id="country"></li>
+                                            <li class="list-group-item" id="phone"></li>
+                                            <li class="list-group-item" id="mobile"></li>
+                                            <li class="list-group-item" id="email"></li>
+                                            
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                function loadUserDetails(name,last_name,city,country,phone,mobile,email,profile_img){
+                    document.getElementById('name').innerHTML = name+" "+last_name
+                    document.getElementById('city').innerHTML = "City: "+city
+                    document.getElementById('country').innerHTML = "Country: "+country
+                    document.getElementById('phone').innerHTML = "Phone: "+phone
+                    document.getElementById('mobile').innerHTML = "Mobile: "+mobile
+                    document.getElementById('email').innerHTML = "Email: "+email
+                    document.getElementById('profile_img').src = "/"+profile_img
+                    document.getElementById('showModal').click()
+                }
+            </script>
+            <script src="/js/ajax/apf.js"></script>
+            <script>
+                loadOrders()
+            </script>
+            <%- include('partials/footer.ejs') %>
