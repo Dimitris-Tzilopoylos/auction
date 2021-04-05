@@ -1,4 +1,4 @@
-function loadDoc(page=1,view=24,meta={}) {
+  function loadDoc(page=1,view=24,meta={}) {
     var xhttp = new XMLHttpRequest();
  
 
@@ -17,8 +17,6 @@ function loadDoc(page=1,view=24,meta={}) {
     // xmlhttp.setRequestHeader("authorization", );
     xhttp.send();
   }
-
-
 
   function loadCategories(supercategory,name,page=1,view=24,meta={}) {
     var xhttp = new XMLHttpRequest();
@@ -95,6 +93,30 @@ function loadDoc(page=1,view=24,meta={}) {
     xhttp.send(data);
   }
 
+  function loadUsers(page=1,view=24,filters=null,meta={}) {
+    var xhttp = new XMLHttpRequest();
+    // let temp =  document.getElementById("orderTable").innerHTML
+    document.getElementById("userTable").style = "none"
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById('loading').style.display = "none"
+        document.getElementById("userTable").style = "block"
+        document.getElementById("userTable").innerHTML = this.responseText ;
+      }else if (this.readyState == 4 && this.status == 404) {
+        document.getElementById("userTable").style = "block"
+        document.getElementById('loading').style.display = "none"
+        document.getElementById("userTable").innerHTML = this.responseText ;
+      }else{
+          document.getElementById("userTable").style = "none"
+          document.getElementById('loading').style.display = "flex"
+      }
+    };
+    if(!filters)
+      xhttp.open("GET", `/dashboard/users/ajax?page=${page}&view=${view}`, true);
+    else 
+      xhttp.open("GET", `/dashboard/orders/ajax?page=${page}&view=${view}${filters}`, true);
+    xhttp.send();
+  }
 
   function loadOrders(page=1,view=24,status=null,meta={}) {
     var xhttp = new XMLHttpRequest();

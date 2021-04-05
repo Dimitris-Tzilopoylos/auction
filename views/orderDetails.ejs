@@ -1,0 +1,87 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/sidebar.ejs') %>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <%- include('partials/admin-navbar.ejs') %>
+
+                <!-- Begin Page Content -->
+                <div class="container ">
+                    <div class="row">
+                        <div class="col-md-12">
+                          <% if( orderError ){ %>
+                                       
+                              <p class="alert alert-danger shadow my-2" id="" onclick="this.style.display='none'"><%= orderError %></p>  
+                            
+                        <% } %>
+                        <% if( orderMessage ){ %>
+                                       
+                          <p class="alert alert-success shadow my-2" id="" onclick="this.style.display='none'"><%= orderMessage %></p>  
+                        
+                    <% } %>
+                        </div>
+                    </div>
+                    <!-- Content Row -->
+                    <div class="row">
+                        <div class="col-md-8 w-100 col-xs-push-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary"><%= order.product.name %></h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center">
+                                        <% for(let i=0;i<order.product.images.length;i++){ %>
+                                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
+                                            src="<%= order.product.images[i] %>" alt="">
+                                        <% } %>
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-md-12">
+                                    <h4 class="text-primary">Product Description</h4>
+                                    <hr>
+                                    <p class="bg-light p-4" style="word-break: break-all;"><%= order.product.description %></p>
+                                    
+                                    <h4 class="text-primary">Product Price Details</h4>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="offset-md-2 col-md-4">
+                                            <p class="text-primary p-4 bg-light text-center card shadow">Starting price: <%= order.product.start_price+" "+order.product.currency.symbol %></p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p class="text-primary p-4 bg-light text-center card shadow">End price: <%= order.product.end_price+" "+order.product.currency.symbol %></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        
+                        <!-- Content Column -->
+                        <div class="col-md-4 mb-4 col-xs-pull-12">
+                            <!-- Project Card Example -->
+                            <div class="card shadow mb-4  ">
+                                <div class="card-header  bg-primary">
+        
+                                    <h4 class=" ml-4 text-primary h3 mb-0 mr-2 text-light" style="font-family:fantasy"> Your Order</h4>
+                                </div>
+                                <div class="card-body bg-light">
+                                    <p>Order Status:<span class="text-primary"> <%= order.status %></span></p>
+                                    <p>Order Price: <span class="text-primary"> <%= order.price %></span> <span class="text-danger"><%= order.currency.symbol+" ("+order.currency.iso+") " %></span></p>
+                                    <div>
+                                        <% if(checkout){ %> 
+                                            <a href="/checkout/<%= order._id %>" class="mr-4 btn btn-sm btn-success shadow-sm" style="display:block;margin:0 auto"><i class="fas fa-shopping-cart fa-sm text-white-50"></i> Checkout </a>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+<%- include('partials/footer.ejs') %>

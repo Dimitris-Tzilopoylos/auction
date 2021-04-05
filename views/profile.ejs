@@ -1,0 +1,194 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/sidebar.ejs') %>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <%- include('partials/admin-navbar.ejs') %>
+            
+                <!-- Begin Page Content -->
+                <div class="container my-4">
+                    <div class="d-sm-flex align-items-center justify-content-center ">
+                        <h1 class="h3 mb-0 text-gray-800 text-center">Manage Profile Details</h1>
+                    </div>
+                        <div class="row">
+                            <div class="col-md-6 offset-md-3 my-4">
+                                <form action="/dashboard/profile/image" method="POST" enctype="multipart/form-data" class="card p-2 shadow bg-primary"  id="img_form" onsubmit="uploadImg(event)">
+                                    <div class="form-group">
+                                        <p id="img-validation-error" style="display:none" class="text-center alert shadow" onclick="this.style.display='none'"></p>
+                                    </div>
+                                    <div class="form-group d-flex justify-content-center" style="position:relative">
+                                        <img id="img" style="border-radius:50%;cursor:pointer;max-width:120px;max-height:120px;" width="120px" height="120px" class="img-fluid shadow" src="/<%= user.profile_img%>" alt="<%= user.name%> <%=user.last_name %>" title="<%= user.name%> <%=user.last_name %>">
+                                        <input type="file" name="upload_img" id="upload_img" style="display:none" accept="image/gif, image/jpeg, image/png, img/jpg" onchange="validateImg(event)">
+                                        <p class="img-pointer"><i class="fas fa-hand-pointer text-warning shadow font-weight-bold"> </i> <span class="d-none d-md-inline-block text-light" style="font-size:12px">Click your image</span></p>
+                                    </div>
+                                    <div class="form-group d-flex justify-content-center">
+                                        <input type="submit" value="Change Image" class="btn btn-sm btn-outline-light shadow-sm" id="uploadBtn"  disabled>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-6 offset-md-3 my-1">
+                                <% if(error){ %>
+                                    <div class="form-group">
+                                        <p class=" text-center alert alert-danger shadow-sm" onclick="this.style.display='none';"><%= error %></p>
+                                    </div>
+                                <% } %>
+                                <% if(message){ %>
+                                    <div class="form-group">
+                                        <p class=" text-center alert alert-success shadow-sm" onclick="this.style.display='none';"><%= message %></p>
+                                    </div>
+                                <% } %>
+                            </div>
+                            <div class="col-md-6 offset-md-3">
+                                <form action="/dashboard/profile/update" method="post" class="card shadow p-2">
+                                    <div class="card-body p-2 row">
+                                        <div class="form-group col-md-6">
+                                            <label for="name">Name</label>
+                                            <input class="form-control" type="text" name="name" id="name" value="<%= user.name %>">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="last_name">Last Name</label>
+                                            <input class="form-control" type="text" name="last_name" id="last_name" value="<%= user.last_name %>">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="city">City</label>
+                                            <input class="form-control" type="text" name="city" id="city" value="<%= user.city %>">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="country">Country</label>
+                                            <input class="form-control" type="text" name="country" id="country" value="<%= user.country %>">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="address1">Address1</label>
+                                            <input class="form-control" type="text" name="address1" id="address1" value="<%= user.address1 %>">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="address2">Address2</label>
+                                            <input class="form-control" type="text" name="address2" id="address2" value="<%= user.address2 %>">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="phone">Phone</label>
+                                            <input class="form-control" type="text" name="phone" id="phone" value="<%= user.phone %>">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="mobile">Mobile</label>
+                                            <input class="form-control" type="text" name="mobile" id="mobile" value="<%= user.mobile %>">
+                                        </div>
+                                        <div class="form-group col-md-12 d-flex justify-content-center">
+                                            <button class="btn btn-sm btn-primary shadow-sm" type="submit">Update</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                </div>
+                <style>
+                    .img-pointer {
+                        position:absolute;
+                        top:100px;
+                        left:295px;
+                        font-size:24px
+                    }
+                    @media only screen and (max-width: 600px) {
+                        .img-pointer {
+                        position:absolute;
+                        top:100px;
+                        left:160px;
+                        font-size:24px
+                    }
+                    }
+                </style>
+                <script>
+                    var img = document.getElementById('img')
+                
+                    var upload_img = document.getElementById('upload_img')
+
+
+                    upload_img.addEventListener('input',function(e){
+                        let file = e.target.files[0];
+                        var reader = new FileReader()
+                        reader.onload = (function(file){
+                            return function(e){
+                             
+                                img.src = e.target.result
+                            }
+                        })(file)
+                        reader.readAsDataURL(file);
+                    })
+
+
+                    img.addEventListener('click',function(e){
+                        document.getElementById('upload_img').click()
+                    })
+                </script>
+                <script>
+                    function validateImg(e){
+                        try {
+                            var allowed_types = ['image/jpeg','image/jpg','image/png','image/gif'];
+                            var maxSize = 560000
+                            
+                            var getSize = e.target.files[0].size
+                            var getMimeType = e.target.files[0].type
+                            if(getSize > maxSize) {
+                                document.getElementById('img-validation-error').classList.remove('alert-danger')
+                                document.getElementById('img-validation-error').classList.add('alert-danger')
+                                document.getElementById('img-validation-error').innerHTML = "Max File size should be 500 KB"
+                                document.getElementById('img-validation-error').style.display = 'block'
+                                document.getElementById('uploadBtn').disabled = true
+                                return 
+                            }
+                            if(!allowed_types.includes(getMimeType)){
+                                document.getElementById('img-validation-error').classList.remove('alert-danger')
+                                document.getElementById('img-validation-error').classList.add('alert-danger')
+                                document.getElementById('img-validation-error').innerHTML = "Only jpg,jpeg,png and gif image types are allowed"
+                                document.getElementById('img-validation-error').style.display = 'block'
+                                document.getElementById('uploadBtn').disabled = true
+                                return 
+                            }
+                            document.getElementById('img-validation-error').classList.remove('alert-danger')
+                            document.getElementById('img-validation-error').classList.add('alert-success')
+                            document.getElementById('img-validation-error').innerHTML = 'This image seems to be ok!'
+                            document.getElementById('img-validation-error').style.display = 'block'
+                            document.getElementById('uploadBtn').disabled = false
+                        } catch (error) {
+                            console.log(error)
+                        }
+                    }
+                    function uploadImg(e){
+                        try {
+                            e.preventDefault()
+                            var allowed_types = ['image/jpeg','image/jpg','image/png','image/gif'];
+                            var maxSize = 560000
+                            var file = document.querySelector('input[type=file][name=upload_img]').files[0]
+                            var getSize = file.size
+                            var getMimeType = file.type
+                            if(getSize > maxSize) {
+                                document.getElementById('img-validation-error').classList.remove('alert-danger')
+                                document.getElementById('img-validation-error').classList.add('alert-danger')
+                                document.getElementById('img-validation-error').innerHTML = "Max File size should be 500 KB"
+                                document.getElementById('img-validation-error').style.display = 'block'
+                                document.getElementById('uploadBtn').disabled = true
+                                return 
+                            }
+                            if(!allowed_types.includes(getMimeType)){
+                                document.getElementById('img-validation-error').classList.remove('alert-danger')
+                                document.getElementById('img-validation-error').classList.add('alert-danger')
+                                document.getElementById('img-validation-error').innerHTML = "Only jpg,jpeg,png and gif image types are allowed"
+                                document.getElementById('img-validation-error').style.display = 'block'
+                                document.getElementById('uploadBtn').disabled = true
+                                return 
+                            }
+                            document.getElementById('img-validation-error').classList.remove('alert-danger')
+                            document.getElementById('img-validation-error').classList.add('alert-success')
+                            document.getElementById('img-validation-error').innerHTML = 'Uploading Image!'
+                            document.getElementById('img-validation-error').style.display = 'block'
+                            document.getElementById('uploadBtn').disabled = false
+                            document.forms.namedItem('img_form').submit()
+                        } catch (error) {
+                            console.log(error)
+                        }
+                    }
+                </script>
+ <%- include('partials/footer.ejs') %>

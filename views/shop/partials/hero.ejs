@@ -5,8 +5,12 @@
             <p class="font-italic mb-0">Sign up <a href="/register" class="text-success">Here</a></p>
             <a href="/login" role="button" class="my-4 btn btn-primary px-5 shadow-sm">Log in</a>
         <% }else{ %>
-            <p class="font-italic mb-0">Are you having fun <span  class="text-success" style="font-family:fantasy"><%= user.name+" "+user.last_name %> </span><span class='text-warning' style="font-family:fantasy"> ?</span></p>
-            <a href="/dashboard" role="button" class="my-4 btn btn-primary px-5 shadow-sm">Dashboard <i class="fas fa-list"></i></a>
+                <p class="font-italic mb-0">Are you having fun <span  class="text-success" style="font-family:fantasy"><%= user.name+" "+user.last_name %> </span><span class='text-warning' style="font-family:fantasy"> ?</span></p>
+            <% if(user.isAdmin){ %>
+                <a href="/dashboard" role="button" class="my-4 btn btn-primary px-5 shadow-sm">Dashboard <i class="fas fa-list"></i></a>
+            <% }else{ %>
+                <!-- <a href="/dashboard" role="button" class="my-4 btn btn-primary px-5 shadow-sm">Dashboard <i class="fas fa-list"></i></a> -->
+            <% } %>
         <% } %>
     </div>
 </div>

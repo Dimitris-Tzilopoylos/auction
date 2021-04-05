@@ -1,0 +1,55 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/sidebar.ejs') %>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <%- include('partials/admin-navbar.ejs') %>
+       
+                <!-- Begin Page Content -->
+                <div class="container-fluid"  style="position:relative">
+
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800">Manage Users</h1>
+                    <div id="loading" style="display:none;margin-top:160px;justify-content:center;align-items:center;position:absolute;top:-160px;left:50%;z-index:10">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                          </div>
+                    </div>
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary" style="cursor:pointer" id="toggleForm">
+                                User Table
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <% if( userError ){ %>
+                                     
+                                <p class="alert alert-danger my-2" id="" onclick="this.style.display='none'"><%= userError %></p>  
+                              
+                          <% } %>
+                            <div class="table-responsive" id="userTable">            
+                               
+                            </div>                        
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+
+            <script>
+                var toggleForm = document.getElementById('toggleForm')
+                var productTable = document.getElementById('userTable')
+            </script>
+            <script src="/js/ajax/apf.js"></script>
+            <script>
+                loadUsers()
+            </script>
+            <%- include('partials/footer.ejs') %>

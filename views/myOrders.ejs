@@ -22,7 +22,20 @@
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                           
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <% if( orderError ){ %>
+                                                            
+                                            <p class="alert alert-danger shadow my-2" id="" onclick="this.style.display='none'"><%= orderError %></p>  
+                                        
+                                        <% } %>
+                                        <% if( orderMessage ){ %>
+                                                        
+                                            <p class="alert alert-success shadow my-2" id="" onclick="this.style.display='none'"><%= orderMessage %></p>  
+                                        
+                                        <% } %>
+                                    </div>
+                                </div>
                                 <div class="row">
                                      
                                     <% if(orders && orders.length > 0){ %>

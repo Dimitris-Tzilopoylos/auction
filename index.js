@@ -13,6 +13,7 @@ const errorCoreRoutes = require('./router/core/errors')
 const shopCoreRoutes = require('./router/core/shop')
 const sessionRedis = require('./redis')
 
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
 
@@ -33,7 +34,7 @@ app.use(generalErrorHandler)
  
 mongoose.connect(process.env.DB,{
     useCreateIndex:false,
-    useFindAndModify:true,
+    useFindAndModify:false,
     useUnifiedTopology:true,
     useNewUrlParser:true 
 }).then(()=>{

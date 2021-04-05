@@ -78,6 +78,20 @@ const userSchema = new mongoose.Schema({
         type:Number,
         default:0
     },
+    isAdmin:{
+        type:Boolean,
+        default:false
+    },
+    access:[{
+        page:{
+            type:String,
+            trim:true
+        },
+        url:{
+            type:String,
+            trim:true
+        }
+    }]
 
 },{timestamps:true})
 

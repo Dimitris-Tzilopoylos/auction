@@ -1,0 +1,151 @@
+<%- include('partials/header.ejs') %>
+<%- include('partials/sidebar.ejs') %>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <%- include('partials/admin-navbar.ejs') %>
+
+                <!-- Begin Page Content -->
+                <div class="container ">
+
+                    <!-- Content Row -->
+                    <div class="row">
+
+                        <!-- Content Column -->
+                        <div class="col-lg-12 mb-4">
+                            <!-- Project Card Example -->
+                            <div class="card shadow mb-4 d-flex justify-content-center">
+                                <div class="card-header py-3 d-flex justify-content-center align-items-center bg-primary">
+                                    <img src="/<%= _user.profile_img %>" alt="<%= _user.name %> <%= _user.last_name %>" title="<%= _user.name %> <%= _user.last_name %>" style="width:140px;height:150px;max-width:140px;max-height:140px;border-radius:50%;box-shadow: 1px 3px 10px #111;" class="img-fluid  img-thumbnail">
+                                    <h4 class=" ml-4 text-primary h3 mb-0 mr-2 text-light" style="font-family:fantasy"> <%= _user.name %> <%= _user.last_name %></h4>
+                                </div>
+                                <div class="card-body bg-light">
+                                    <div class="row my-4">
+                                        <div class="col-md-12">
+                                          <% if( userError ){ %>
+                                                       
+                                              <p class="alert alert-danger shadow my-2" id="" onclick="this.style.display='none'"><%= userError %></p>  
+                                            
+                                        <% } %>
+                                        <% if( userMessage ){ %>
+                                                       
+                                          <p class="alert alert-success shadow my-2" id="" onclick="this.style.display='none'"><%= userMessage %></p>  
+                                        
+                                    <% } %>
+                                        </div>
+                                    </div>
+                                        <div class="d-sm-flex align-items-center justify-content-start mb-4">
+                                             
+                                            <% if(orders > 0 ){ %> 
+                                                <a href="/dashboard/user/<%= _user._id %>/orders" class="mr-4 d-sm-inline-block btn btn-sm btn-success shadow-sm"><i class="fas fa-eye fa-sm text-white-50"></i> <%= orders %> Orders</a>
+                                            <% } %>
+                                            <% if(bids > 0){ %> 
+                                                <a href="/dashboard/user/<%= _user._id %>/bids" class="mr-4 d-sm-inline-block btn btn-sm btn-warning shadow-sm"><i class="fas fa-eye fa-sm text-white-50"></i> <%= bids %> Bids</a>             
+                                            <% } %> 
+                                            <a href="#adminModal" data-toggle="modal" class="mr-4 d-sm-inline-block btn btn-sm btn-info shadow-sm" >Privileges</a>
+                                            <a href="#blacklistModal" data-toggle="modal" class="mr-4 d-sm-inline-block btn btn-sm btn-danger shadow-sm" >Blacklist</a>
+                                        </div>
+                                    <p>Email:<span class="text-primary"> <%= _user.email %></span></p>
+                                    <p>Name: <span class="text-primary"> <%= _user.name %></span></p>
+                                    <p>Last Name: <span class="text-primary"> <%= _user.last_name %></span></p>
+                                    <p>Country: <span class="text-primary"> <%= _user.country %></span></p>
+                                    <p>City: <span class="text-primary"> <%= _user.city %></span></p>
+                                    <p>Address 1: <span class="text-primary"> <%= _user.address1 %></span></p>
+                                    <p>Address 2: <span class="text-primary"> <%= _user.address2 %></span></p>
+                                    <p>Phone: <span class="text-primary"> <%= _user.phone %></span></p>
+                                    <p>Mobile: <span class="text-primary"> <%= _user.mobile %></span></p>
+                                    
+                                    <hr>
+                                    <p>Created At: <%= _user.createdAt && _user.createdAt.toUTCString() %></p>
+                                    <p>Updated At: <%= _user.updatedAt && _user.updatedAt.toUTCString() %></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+  
+            <div class="modal fade" id="adminModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="close-modal" data-dismiss="modal" style="display:flex;width: 100%;justify-content:flex-end;padding:10px"><i class="fa fa-times"></i></div>
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-md-12 offset-md-12">
+                                    <div class="modal-body">
+                                        <!-- Project Details Go Here-->
+                                        <h6 class="text-center">User <%= _user.name+" "+_user.last_name %> <span class="text-primary"> is </span> <span class="text-danger font-weight-bold"> <%= _user.isAdmin ? 'Admin' : ' a Member' %>  </span></h6>
+                                        <hr>
+                                        <form action="/dashboard/user/<%= _user._id %>/privileges" method="post" class="">
+                                        <div class="form-group d-flex justify-content-center">
+                                            <div class="form-group">
+                                                <label for="admin">Admin</label>
+                                                <input type="radio" class="mx-2" name="isAdmin" value="Admin" id="admin" <%= _user.isAdmin ? 'checked' : '' %>>
+                                            </div>
+                                           <div class="form-group">
+                                               <label for="member">Member</label>
+                                               <input type="radio" class="mx-2" name="isAdmin" value="Member" id="member" <%= !_user.isAdmin ? 'checked' : '' %>>
+                                           </div>
+                                        
+                                        </div> 
+                                        <hr>
+                                        <input type="hidden" name="user_id" value="<%= _user._id %>">
+                                        <div class="form-group my-4">
+                                           <button class="btn btn-primary btn-block" type="submit">Change</button>
+                                        </div> 
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+ 
+            
+            <div class="modal fade" id="blacklistModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="close-modal" data-dismiss="modal" style="display:flex;width: 100%;justify-content:flex-end;padding:10px"><i class="fa fa-times"></i></div>
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-md-12 offset-md-12">
+                                    <div class="modal-body">
+                                        <!-- Project Details Go Here-->
+                                        <h6 class="text-center">User <%= _user.name+" "+_user.last_name %> <span class="text-primary"> is </span> <span class="text-<%= _user.blacklist ? 'danger' : 'success'%> font-weight-bold"> <%= _user.blacklist ? 'Blocked' : 'Active ' %>  </span></h6>
+                                        <hr>
+                                        <form action="/dashboard/user/<%= _user._id %>/blacklist" method="post" class="">
+                                        <div class="form-group d-flex justify-content-center">
+                                            <div class="form-group">
+                                                <label for="admin">Block</label>
+                                                <input type="radio" class="mx-2" name="blacklist" value="block" id="block" <%= _user.blacklist ? 'checked' : '' %>>
+                                            </div>
+                                           <div class="form-group">
+                                               <label for="member">Unblock</label>
+                                               <input type="radio" class="mx-2" name="blacklist" value="unblock" id="unblock" <%= !_user.blacklist ? 'checked' : '' %>>
+
+                                           </div>
+                                        </div> 
+                                        <hr>
+                                        <input type="hidden" name="user_id" value="<%= _user._id %>">
+                                        <div class="form-group my-4">
+                                           <button class="btn btn-primary btn-block" type="submit">Action</button>
+                                        </div> 
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+<%- include('partials/footer.ejs') %>

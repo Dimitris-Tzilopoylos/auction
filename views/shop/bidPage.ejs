@@ -43,11 +43,11 @@
                     </div>
                     <% if(bids && bids.length > 0 ){ %>
                     <div class="col-auto">
-                        <img width="80" height="80" class="img-fluid" style="border-radius:50%;" src="/<%= bids[bids.length-1].user.profile_img %>" alt="" id="last_bidder_profile_img">
+                        <img width="80" height="80" class="img-fluid" style="border-radius:50%;max-width:80px;max-height:80px;" src="/<%= bids[bids.length-1].user.profile_img %>" alt="" id="last_bidder_profile_img">
                     </div>
                     <% }else{ %>
                       <div class="col-auto">
-                        <img width="80" height="80" class="img-fluid" src="" style="display:none;border-radius:50%" alt="" id="last_bidder_profile_img">
+                        <img width="80" height="80" class="img-fluid" src="" style="display:none;border-radius:50%;max-width:80px;max-height:80px;" alt="" id="last_bidder_profile_img">
                         <!-- <i class="fas fa-user"></i> -->
                       </div>
                     <% } %>
@@ -96,7 +96,7 @@
                       </div>
                   </div>
                   <div class="col-auto">
-                    <img src="/<%= product.user.profile_img %>" style="width:70px;height:70;border-radius:50%" class="img-fluid shadow mr-5" alt="">
+                    <img src="/<%= product.user.profile_img %>" style="width:80px;height:80;max-width:80px;max-height:80px;border-radius:50%" class="img-fluid shadow mr-5" alt="">
                   </div>
               </div>
           </div>
@@ -116,7 +116,7 @@
                                 <div class="wrapper row">
                                     <div class="details col-md-12 my-2">
                                       <div class="row">
-                                        <div class="col-md-12 w-100"> <p id="show-time-interval" class="alert alert-info text-center font-weight-bold my-2" style="display:none;font-size:14px;"></p></div>
+                                        <div class="col-md-12 w-100"> <p id="show-time-interval" class="shadow-sm alert alert-info text-center font-weight-bold my-2" style="display:none;font-size:14px;"></p></div>
                                         <div class="col-md-12">
                                           <h6 class="product-title text-primary"><%= product.name %></h6>
                                         </div>
@@ -395,7 +395,7 @@
     
     <% let bidChartData = JSON.stringify(bids) %>
     bidGlobal = setGlobalBid(<%-bidChartData %>);
-    
+    <% let cu = JSON.stringify(currency) %>
     function toggleDetails(){
       var toggleBtn = document.getElementById("toggleBtnDetails")
       var con = document.getElementById('detail-cards-container')
@@ -419,7 +419,7 @@
     }
     joinProduct('<%= product._id %>')
     disableBtnSinceLastBid("<%= last_bid %>")
-    setChart(bidGlobal.labels,bidGlobal.data,bidGlobal.currency.symbol)
+    setChart(bidGlobal.labels,bidGlobal.data,<%-cu.symbol %>)
 </script>
  
 

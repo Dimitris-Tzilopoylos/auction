@@ -1,10 +1,11 @@
 const Product  = require('../models/Product')
+const User = require('../models/User')
 const Supercategory  = require('../models/Supercategory')
 const Category  = require('../models/Category')
 const Bid  = require('../models/Bid')
 const utils = require('../utils/utils')
 const Order = require('../models/Order')
-const { countDocuments } = require('../models/Product')
+
 
 
 
@@ -245,12 +246,21 @@ exports.myBids = async (req,res,next) => {
 }
 
 exports.myOrderPage = async (req,res,next) => {
+    let orderError;
+    let orderMessage;
+    if(req.session.setError && req.query.orderError) {
+        orderError = req.query.orderError
+    }
+    if(req.session.setError && req.query.orderMessage) {
+        orderError = req.query.orderMessage
+    }
     try {
         if(!req.session.isAuthenticated){
             throw new Error('Please login first')
         }
         const orders = await Order.distinct('status',{to:req.session.user._id})
-        res.render('myOrders',{orders})
+        req.session.setError = false
+        res.render('myOrders',{orders,orderError,orderMessage})
     } catch (error) {
         error.status = 400
         error.message = 'Please login first'
@@ -324,5 +334,135 @@ exports.makeProductSold = async (req,res,next) => {
     } catch (error) {
         req.session.setError = true
         res.redirect('/dashboard/products?page=1&&productError=Order was not submitted');
+    }
+}
+
+exports.productDetailsBeforeCheckout = async (req,res,next) => {
+    let orderError;
+    let orderMessage;
+    if(req.session.setError && req.query.orderError) {
+        orderError = req.query.orderError
+    }
+    if(req.session.setError && req.query.orderMessage) {
+        orderError = req.query.orderMessage
+    }
+    try {
+        const {order_id} = req.params
+ 
+        if(!order_id) throw new Error('Bad request')
+        const order = await Order.findOne({_id:order_id,to:req.session.user._id}).populate('to','name email last_name address1 address2 city country phone mobile blacklist isAdmin').populate('product')
+
+        if(!order) throw new Error('Bad request')
+        if(!order.product) throw new Error('Bad request')
+        if(order) {
+            if(order.to.blacklist) {
+                res.redirect('/logout')
+                return
+            }
+            if(order.to.isAdmin) {
+                res.redirect('/dashboard')
+                return
+            }
+        }
+        req.session.setError = false
+        res.render('orderDetails',{order,orderMessage,orderError,checkout:order.status == 'needs-approval' ? true : false})
+    } catch (error) {
+        console.log(error)
+        res.redirect('/dashboard/orders')
+    }
+}
+
+exports.manageUsers = async (req,res,next) => {
+    let userError = null;
+    let userMessage = null;
+    if(req.session.setError && req.query.userError) {
+        userError = req.query.userError
+    }
+    if(req.session.setError && req.query.userMessage) {
+        userMessage = req.query.userMessage
+    }
+    req.session.setError = false
+    res.render('manageUsers',{userError,userMessage})
+}
+
+exports.getUsersAjax = async (req,res,next) => {
+    if(!req.session.user.isAdmin) {
+        res.status(404).send('<p class="alert alert-sm alert-danger">No Users found at the moment</p>')
+        return 
+    }
+
+    try {
+        const data = await utils.paginate(User,req.query.page || 1,req.query.view || 12,{},{},false)
+        res.status(200).render('ajax/users',data)
+        if(!data.obj) throw new Error()
+    } catch (error) {
+         res.status(404).send('<p class="alert alert-sm alert-danger">No users found at the moment</p>')
+    }
+} 
+
+
+exports.getUserDetails = async (req,res,next) => {
+    let userMessage;
+    let userError;
+    if(req.session.setError && req.query.userError) {
+        userError = req.query.userError
+    }
+    if(req.session.setError && req.query.userMessage) {
+        userMessage = req.query.userMessage
+    }
+    try {
+        req.session.setError = false
+        const user = await User.findById(req.params.user_id)
+        if(!user) {
+            req.session.setError = true
+            res.redirect('/dashboard/users?userError=User not found')
+            return
+        }
+        delete user.password 
+        const orders = await Order.countDocuments({to:user._id})
+        const bids = await Bid.countDocuments({user:user._id})
+        res.render('userDetails',{_user:user,orders,bids,userError,userMessage})
+    } catch (error) {
+        req.session.setError = true
+        res.redirect('/dashboard/users?userError=Something went wrong')
+    }
+}
+
+
+exports.privileges = async (req,res,next) => {
+    const allowedPrivileges = ['Admin','Member'];
+    let user
+    try {
+        if(req.params.user_id != req.body.user_id) throw new Error('Bad request')
+        user = await User.findById(req.body.user_id)
+        if(!user ) throw new Error('Bad request')
+        if(!req.body.isAdmin || !allowedPrivileges.includes(req.body.isAdmin)) throw new Error('Bad request')
+        user.isAdmin = req.body.isAdmin == "Admin" ? true : false;
+        await user.save()
+        req.session.setError = true
+        res.redirect(`/dashboard/user/${req.params.user_id}?userMessage=You changed membership of user ${user.name} ${user.last_name} to ${user.isAdmin ? 'Admin' : 'Member'}`)
+    } catch (error) {
+        req.session.setError = true
+        res.redirect(`/dashboard/user/${req.params.user_id}?userError=Updating membership failed`)
+    }
+}
+
+
+exports.blacklist = async (req,res,next) => {
+    const allowedActions = ['block','unblock'];
+    let user
+    try {
+        if(req.params.user_id != req.body.user_id) throw new Error('Bad request')
+        user = await User.findById(req.body.user_id)
+        if(!user ) throw new Error('Bad request')
+        if(!req.body.blacklist || !allowedActions.includes(req.body.blacklist)) throw new Error('Bad request')
+        user.blacklist = req.body.blacklist == "block" ? true : false;
+        await user.save()
+        req.session.setError = true
+        res.redirect(`/dashboard/user/${req.params.user_id}?userMessage=You ${req.body.blacklist == 'block' ? 'blocked' : 'unblocked'} user ${user.name} ${user.last_name}`)
+    } catch (error) {
+        console.log(error)
+        req.session.setError = true
+        res.redirect(`/dashboard/user/${req.params.user_id}?userError=Updating access failed`)
     }
 }

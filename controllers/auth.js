@@ -10,7 +10,7 @@ exports.postLogin = async (req,res,next) => {
     }
     const {email,password,isAjax} = req.body 
     try {
-        const user = await User.findOne({email})
+        const user = await User.findOne({email,blacklist:false})
         if(!user) throw new Error('Invalid credentials')
         const isAuth = await bcrypt.compare(password,user.password)
         if(!isAuth) throw new Error('Invalid credentials')
@@ -26,8 +26,12 @@ exports.postLogin = async (req,res,next) => {
             })
         }else{
             req.session.isAuthenticated = true
+            delete user.password
             req.session.user = user
-            res.redirect('/dashboard')
+            if(user.isAdmin)
+                res.redirect('/dashboard')
+            else 
+                res.redirect('/')
             return
         }
     } catch (error) {
