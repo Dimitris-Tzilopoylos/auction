@@ -77,8 +77,9 @@ exports.getBidPage = async (req,res,next) => {
         const product = await Product.findById(req.params.product_id).populate('user','name last_name profile_img city country')
         const bids = await Bid.find({product:req.params.product_id}).limit(10).sort({'createdAt':-1}).populate('user','name last_name profile_img')
         bids.sort((a,b)=>a.price-b.price)
+ 
         if(!product) throw new Error('404')
-        else res.render('shop/bidPage',{product,bids})
+        else res.render('shop/bidPage',{product,bids,currency:product.currency})
     } catch (error) {
  
         error.status = 404;

@@ -1,5 +1,5 @@
 const generalErrorHandler = (error,req,res,next)=>{
-    console.log(error)
+console.log(error)
     if(error.path && !error.isAjax) {
        res.redirect(error.path)
        return 

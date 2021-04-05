@@ -18,7 +18,7 @@ socket.on('new_evaluation',(data)=>{
     bidGlobal.labels.push(jsonResponse.user.bid.createdAt)
 
     // bidGlobal = setGlobalBid( bidGlobal.data , bidGlobal.labels ,jsonResponse.user.bid.currency.symbol)
-    chart.data.labels.push(jsonResponse.user.bid.createdAt);
+    chart.data.labels.push(new Date(jsonResponse.user.bid.createdAt).toUTCString().split(",")[1].split("GMT")[0]);
     chart.data.datasets.forEach((dataset) => {
         dataset.data = bidGlobal.data 
     });
@@ -36,8 +36,8 @@ socket.on("connect_error", () => {
 })
 
 function setGlobalBid(data){
-      
-    return {data:data.map((d)=>d.price),labels:data.map((d)=>d.createdAt),currency:data.length>0 ? data.currency : 'euro'}
+      console.log(data)
+    return {data:data.map((d)=>d.price),labels:data.map((d)=>d.createdAt),currency:data.currency}
   }
 
 
@@ -134,7 +134,7 @@ function nextBidAllowed(last_bid) {
             setTimeout(()=>{
                 document.getElementById('bidBtn').disabled = false 
                 document.getElementById('bidBtn').innerHTML = "Submit"
-                document.getElementById('bidBtn').classList.remove('btn-danger')
+                document.getElementById('bidBtn').classList.remove('btn-outline-success')
                 document.getElementById('bidBtn').classList.add('btn-success')
                 document.getElementById('show-time-interval').style.display = 'none'
             },2000)
@@ -291,4 +291,5 @@ function setLastBidder(user){
   document.getElementById('last_bidder_date').innerHTML = new Date(user.bid.createdAt).toUTCString()
   console.log(user.profile_img)
   document.getElementById('last_bidder_profile_img').src  = `/${user.profile_img}`
+  if(document.getElementById('last_bidder_profile_img').style.display == "none" ) document.getElementById('last_bidder_profile_img').style.display = 'block' 
 } 
