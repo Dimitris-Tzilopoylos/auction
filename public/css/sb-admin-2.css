@@ -5090,6 +5090,9 @@ a.badge-dark:focus, a.badge-dark.focus {
   color: #78261f;
   background-color: #fadbd8;
   border-color: #f8ccc8;
+  content:'\f12a' !important;
+  font-family: 'Font Awesome 5 Free';
+
 }
 
 .alert-danger hr {

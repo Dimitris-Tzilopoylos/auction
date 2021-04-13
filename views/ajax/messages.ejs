@@ -1,0 +1,197 @@
+<% if(messages.length >0){ %>
+<div class="">
+    <div class="row">
+		<div class="col-md-4 bg-white " style="background:white;max-height:750px;overflow-y:auto"> 
+            <div class=" row border-bottom padding-sm" style="height: 40px;width:100%">
+                <h5 class="text-center text-primary p-2">Discussions  <span class="badge badge-primary shadow-sm"><%= totalMessages %></span></h5>
+                <hr>
+            </div>
+            
+            <!-- =============================================================== -->
+            <!-- member list -->
+            <ul class="friend-list" id="populateMsg">
+                <% for(let message of messages){ %>
+                <li class="bg-light shadow-sm my-4 card">
+                	<a href="/messages/discussion/<% if(message.parentId){ %><%= message.parentId %><% } else { %><%= message._id %><% } %>" class="clearfix">
+                        <% if(message.responses.length == 0){ %>
+                            <img src="/<%= message.from.profile_img %>" alt="" class="img-circle">
+                            <div class="friend-name">	
+                                <strong><%= message.from.name %> <%= message.from.last_name %></strong>
+                            </div>
+                		    <div class="last-message text-muted" style="word-wrap: break-word;"><%= message.message %> </div>
+                        <% }else{ %>
+                            <img src="/<%= message.responses[message.responses.length-1].from.profile_img %>" alt="" class="img-circle">
+                            <div class="friend-name">	
+                                <strong><%= message.responses[message.responses.length-1].from.name %> <%= message.from.last_name %></strong>
+                            </div>
+                		    <div class="last-message text-muted" style="word-wrap: break-word;"><%= message.responses[message.responses.length-1].message %> </div>
+                        <% } %>
+                		<small class="time text-muted"><%= new Date(message.updatedAt).toDateString() %></small>
+                		<small class="chat-alert label label-danger"><%= message.responses && message.responses.length %></small>
+						<p class="badge badge-<%= message.status ? 'danger' : 'success' %> shadow-sm"><%= message.status ? 'Closed' : 'Open' %></p>
+                	</a>
+                </li>
+                <% } %>   
+               
+            </ul>
+			<ul class="friend-list">
+				<% if(totalMessages > 10){ %>
+                    <li class="active bounceInDown">
+                        <button class="btn btn-primary btn-block shadow-sm" id="loadMsg" onclick="getMessages(true)">Load More</button>
+                    </li>
+                <% } %> 
+			</ul>
+		</div>
+        
+        <!--=========================================================-->
+        <!-- selected chat -->
+    	<div class="col-md-8 bg-white card" style="background:white;max-height:750px;overflow-y:auto" id="message-overflow-container">
+            
+            <div class="chat-message card-header" style="background:white;">
+                <p id="subject" class="text-right text-primary">Compose</p>
+                <hr>
+                <ul class="chat card-body" id="chat-messages">
+                    <li class="left clearfix">
+                    	<span class="chat-img pull-left">
+                    		<img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
+                    	</span>
+                    	<div class="chat-body clearfix">
+                    		<div class="header">
+                    			<strong class="primary-font">John Doe</strong>
+                    			<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins ago</small>
+                    		</div>
+                    		<p>
+                    			Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    		</p>
+                    	</div>
+                    </li>
+                    <li class="right clearfix">
+                    	<span class="chat-img pull-right">
+                    		<img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
+                    	</span>
+                    	<div class="chat-body clearfix">
+                    		<div class="header">
+                    			<strong class="primary-font">Sarah</strong>
+                    			<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins ago</small>
+                    		</div>
+                    		<p>
+                    			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales at. 
+                    		</p>
+                    	</div>
+                    </li>
+                    <li class="left clearfix">
+                        <span class="chat-img pull-left">
+                    		<img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
+                    	</span>
+                    	<div class="chat-body clearfix">
+                    		<div class="header">
+                    			<strong class="primary-font">John Doe</strong>
+                    			<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins ago</small>
+                    		</div>
+                    		<p>
+                    			Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    		</p>
+                    	</div>
+                    </li>
+                    <li class="right clearfix">
+                        <span class="chat-img pull-right">
+                    		<img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
+                    	</span>
+                    	<div class="chat-body clearfix">
+                    		<div class="header">
+                    			<strong class="primary-font">Sarah</strong>
+                    			<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins ago</small>
+                    		</div>
+                    		<p>
+                    			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales at. 
+                    		</p>
+                    	</div>
+                    </li>                    
+                    <li class="left clearfix">
+                        <span class="chat-img pull-left">
+                    		<img src="https://bootdey.com/img/Content/user_3.jpg" alt="User Avatar">
+                    	</span>
+                    	<div class="chat-body clearfix">
+                    		<div class="header">
+                    			<strong class="primary-font">John Doe</strong>
+                    			<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 12 mins ago</small>
+                    		</div>
+                    		<p>
+                    			Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    		</p>
+                    	</div>
+                    </li>
+                    <li class="right clearfix">
+                        <span class="chat-img pull-right">
+                    		<img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
+                    	</span>
+                    	<div class="chat-body clearfix">
+                    		<div class="header">
+                    			<strong class="primary-font">Sarah</strong>
+                    			<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins ago</small>
+                    		</div>
+                    		<p>
+                    			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales at. 
+                    		</p>
+                    	</div>
+                    </li>
+                    <li class="right clearfix">
+                        <span class="chat-img pull-right">
+                    		<img src="https://bootdey.com/img/Content/user_1.jpg" alt="User Avatar">
+                    	</span>
+                    	<div class="chat-body clearfix">
+                    		<div class="header">
+                    			<strong class="primary-font">Sarah</strong>
+                    			<small class="pull-right text-muted"><i class="fa fa-clock-o"></i> 13 mins ago</small>
+                    		</div>
+                    		<p>
+                    			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales at. 
+                    		</p>
+                    	</div>
+                    </li>                    
+                </ul>
+            </div>
+            <form class="chat-box bg-white" id="messageForm">
+            	<div class="input-group">
+            		<input class="form-control border no-shadow no-rounded" name="message" placeholder="Type your message here">
+            		<span class="input-group-btn">
+            			<button class="btn btn-primary shadow-sm" type="button" id="sendBtn" onclick="sendMessage('<%= user._id %>','<%= messages[0].to._id %>','<%= messages[0]._id %>')">Send</button>
+            		</span>
+            	</div><!-- /input-group -->	
+            </form>            
+		</div>        
+	</div>
+</div>
+
+
+<script>
+    var div = document.getElementById("message-overflow-container");
+    div.scrollHeight = div.scrollHeight - div.clientHeight;
+    console.log(div.scrollHeight)
+</script>
+
+<% } else { %>
+<div class="container" style="height:100vh;">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+           <p class="alert alert-primary d-flex justify-content-between" style="align-items:center;flex-wrap:wrap">No messages at the moment <a href="/" class="btn btn-primary shadow-sm text-right"> Go Home</a></p> 
+        </div>
+    </div>
+</div>
+
+<style>
+    #messageContainer {
+        background-image:url('/img/nomessages.jpg') !important;
+        background-size:contain;
+        background-repeat: no-repeat;
+        background-position:center center;
+    }
+</style>
+
+
+
+
+  <script>
+	  document.getElementById()
+  </script>
+<% } %>

@@ -7,6 +7,10 @@ io.on('connection',(socket)=>{
        
         socket.join(product_id)
     })
+    socket.on('join-chat',({user_id})=>{
+        
+        socket.join(user_id)
+    })
     socket.on('disconnect',()=>{
      
         socket.leave()

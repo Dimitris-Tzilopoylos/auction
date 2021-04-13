@@ -1,0 +1,251 @@
+<%- include('../partials/header.ejs') %>
+<%- include('../partials/sidebar.ejs') %>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <%- include('../partials/admin-navbar.ejs') %>
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800"></h1>
+                    </div>
+
+                  
+                    <!-- Content Row -->
+                    <div class="row">
+                        <div class="col-md-7 p-4">
+                            <form action="" method="post" class="card p-4">
+                                <div class="card-header bg-primary col-md-12 shadow-sm" >
+                                    <div style="display:flex;justify-content:center;align-items:center">
+                                        <h3 class="text-white text-center">Ship</h3>
+                                    </div>
+                                </div>
+                                <div class="row card-body">
+                                    <div class="form-group col-md-4">
+                                        <label for="name">Name</label>
+                                        <input type="text" id="name" class="form-control" name="name" value="<%= order.name %>" required>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="last_name">Last Name</label>
+                                        <input type="text" id="last_name" class="form-control" name="last_name" value="<%= order.last_name %>" required>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="email">Email</label>
+                                        <input type="email" id="email" class="form-control" name="email" value="<%= order.email %>" required>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="country">Country</label>
+                                        <select name="country" id="country" class="form-control">
+                                            <% for(let country of countries){ %>
+                                            <option value="<%= country.name %>" <% if(order.country && (country.name.trim().toLowerCase() == order.country.trim().toLowerCase())){ %> selected <% } %>><%= country.name %></option>
+                                            <% } %>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="city">City</label>
+                                        <input type="text" id="city" class="form-control" name="city" value="<%= order.city %>" required>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="zip">Zip</label>
+                                        <input type="text" id="zip" class="form-control" name="zip" value="<%= order.zip %>" required>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="address1">Address1</label>
+                                        <input type="text" id="address1" class="form-control" name="address1" value="<%= order.address1 %>"  >
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="address2">Address2</label>
+                                        <input type="text" id="address2" class="form-control" name="address2" value="<%= order.address2 %>"  >
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="phone">Phone Number</label>
+                                        <input type="text" id="phone" class="form-control" name="phone" value="<%= order.phone %>"  >
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="mobile">Mobile Number</label>
+                                        <input type="text" id="mobile" class="form-control" name="mobile" value="<%= order.mobile %>"  >
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="mobile">Parcel Service</label>
+                                        <select name="parcelService" id="parcelService" class="form-control" required>
+                                            <% for(let parcelService of parcelServices){ %>
+                                            <option value="<%= parcelService %>" <% if( parcelService == order.parcelService){ %> selected <% } %> ><%= parcelService %></option>
+                                            <% } %>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="trackingNumber">Tracking Number</label>
+                                        <input type="text" id="trackingNumber" class="form-control" name="trackingNumber" value="<%= order.trackingNumber %>"  >
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="edd" >E.D.Date</label>
+                                        <input class="form-control" id="estimatedDeliveryDate" name="estimatedDeliveryDate" type="datetime-local" value="<%= order.estimatedDeliveryDate  ? order.estimatedDeliveryDate : '' %>"  >
+                                    </div>
+                                    <input type="hidden" name="order_id" value="<%= order._id %>">
+                                    <div class="col-md-4" style="padding:35px">
+                                        <input type="submit" value="Submit" name="submit" class="btn-block btn btn-primary shadow-sm" > 
+                                    </div>
+                                    <div class="col-md-12">
+                                        <input type="hidden" name="order_id" value="<%= order._id %>">
+                                        <p style="font-size:12px;" class="mt-3">Order Id: <%= order._id %></p>
+                                        <hr>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="p-4">
+                                <div class="card row p-4">
+                                    <div class="card-header bg-success col-md-12 shadow-sm">
+                                        <div style="display:flex;justify-content:center;align-items:center">
+                                            <h3 class="text-white text-center">Utils</h3>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <form action="" method="POST"  class="row card-body" style="align-items:center;">
+                                        <div class="form-group col-md-6">
+                                            <label for="status">Order Status</label>
+                                            <select name="status" id="status" class="form-control" required> 
+                                                <option value="needs-approval" <% if( 'needs-approval' == order.status){ %> selected <% } %> >needs-approval</option> 
+                                                <option value="pending" <% if( 'pending' == order.status){ %> selected <% } %> >pending</option>
+                                                <option value="completed" <% if( 'completed' == order.status){ %> selected <% } %> >completed</option> 
+                                                <option value="canceled" <% if( 'canceled' == order.status){ %> selected <% } %> >canceled</option>   
+                                                <option value="refunded" <% if( 'refunded' == order.status){ %> selected <% } %> >refunded</option>                                                                            
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="submit" value="Update" class=" mt-2 btn btn-block btn-sm shadow-sm btn-success">
+                                        </div>
+                                        <input type="hidden" name="order_id" value="<%= order._id %>">
+                                    </form>
+                                    <hr>
+                                    <form action="" method="POST"  class="row card-body" style="align-items:center;">
+                                        <div class="form-group col-md-6">
+                                            <label for="paymentMethod">Payment Method</label>
+                                            <select name="paymentMethod" id="paymentMethod" class="form-control" required> 
+                                                <option value="bank" <% if( 'bank' == order.paymentMethod){ %> selected <% } %> >Bank</option> 
+                                                <option value="paypal" <% if( 'paypal' == order.paymentMethod){ %> selected <% } %> >Paypal</option>
+                                                <option value="visa" <% if( 'visa' == order.paymentMethod){ %> selected <% } %> >Visa</option>                                                                             
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="submit" value="Update" class=" mt-2 btn btn-block btn-sm shadow-sm btn-success">
+                                        </div>
+                                        <input type="hidden" name="order_id" value="<%= order._id %>">
+                                    </form>
+                                    <hr>
+                                    <form action="" method="POST"  class="row card-body" style="align-items:center;">
+                                        <div class="form-group col-md-6">
+                                            <label for="mobile">Parcel Status</label>
+                                            <select name="parcelStatus" id="parcelStatus" class="form-control" required> 
+                                                <option value="in-store" <% if( 'in-store' == order.parcelService){ %> selected <% } %> >in-store</option> 
+                                                <option value="in-transit" <% if( 'in-transit' == order.parcelService){ %> selected <% } %> >in-transit</option>
+                                                <option value="delivered" <% if( 'delivered' == order.parcelService){ %> selected <% } %> >delivered</option>                                                                             
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="submit" value="Update" class=" mt-2 btn btn-block btn-sm shadow-sm btn-success">
+                                        </div>
+                                        <input type="hidden" name="order_id" value="<%= order._id %>">
+                                    </form>
+                                    <hr>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="p-4">
+                                <div class="card row p-4">
+                                    <div class="card-header bg-warning col-md-12 shadow-sm" >
+                                        <div style="display:flex;justify-content:center;align-items:center">
+                                            <img src="<%= order.product.images[0] %>" alt="" style="width:150px;height:150px;border-radius:50%;max-height:150px;max-width:150px;" class="shadow-sm img-fluid">
+                                        </div>
+                                    </div>
+                                    <div  class="row card-body">
+                                        <div class="col-md-12">
+                                            <h3 class="text-center text-primary">Product: <%= order.product.name %></h3>
+                                            <hr>
+                                            <p class="bg-light font-weight-500" style="word-wrap: break-word;padding:30px;"><%= order.product.description %></p>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <p class="text-center font-weight-bold text-danger">Final Price: <%= order.product.end_price+" "+order.product.currency.symbol %></p>
+                                                    <hr>
+                                                </div>
+                                            </div>  
+                                            <div class="row p-4 my-4">  
+                                            <% for(let i=0;i<order.product.images.length;i++){ %>
+                                                <div class="text-center col-md-4">
+                                                    <img class="img-fluid  mt-3 mb-4 shadow img-thumbnail" style="width: 25rem;" src="<%= order.product.images[i] %>" alt="">
+                                                </div>
+                                                    
+                                            <% } %>
+                                            <div class="col-md-12">
+                                                <p style="font-size:12px">ProductId: <%= order.product._id %></p>
+                                            </div>
+                                            </div>                                     
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="p-4">
+                                <div class="card row p-4">
+                                    <div class="card-header bg-danger col-md-12 shadow-sm" >
+                                        <div style="display:flex;justify-content:center;align-items:center">
+                                            <img src="/<%= order.to.profile_img %>" alt="" style="width:150px;height:150px;border-radius:50%;max-height:150px;max-width:150px;" class="shadow-sm img-fluid">
+                                        </div>
+                                    </div>
+                                    <div class="card-body col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-12 p-2">
+                                                <h6 class="text-center">Bidder</h6>
+                                                <hr>
+                                            </div>
+                                            <div class="col-md-4"><p class="text-center text-primary"><%= order.to.name %> <%= order.to.last_name %></p></div>
+                                            <div class="col-md-4"><p class="text-center text-primary"><%= order.to.email %></p></div>
+                                            <div class="col-md-4"><p class="text-center text-primary"><%= order.to.country %>,<%= order.to.city %></p></div>
+                                            <div class="col-md-4"><p class="text-center text-primary"><%= order.to.address1 %> <%= order.to.address2 %> <%= order.to.zip %></p></div>
+                                            <div class="col-md-4"><p class="text-center text-primary">Phone: <%= order.to.phone %> </p></div>
+                                            <div class="col-md-4"><p class="text-center text-primary">Mobile: <%= order.to.mobile %> </p></div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            
+                                        </div>
+                                        <form class="row p-2 card" style="border:1px solid #eee" method="POST" action="" id="messageForm">
+                                            <div class="card-header col-md-12" style="background:white">
+                                                <h4 class="text-center text-danger">Send Message</h4>
+                                            </div>
+                                            <div class="col-md-12 card-body">
+                                                <div class="col-md-12 form-group">
+                                                    <label for="subject">Subject</label>
+                                                    <input type="text" id="subject" name="subject" class="form-control" >
+                                                </div>
+                                                <div class="form-group col-md-12">
+                                                    <label for="message">Message</label>
+                                                    <textarea name="message" id="message" rows="10" class="form-control"></textarea>
+                                                </div>
+                                                <div class="form-group col-md-12">
+                                                    <button type="button" class="btn btn-block btn-danger" id="sendBtn" type="button" onclick="sendMessage('<%= user._id %>','<%= order.to._id %>',false)">Send &nbsp;<i class="fas fa-envelope"></i></button>
+                                                </div>
+                                                <input type="hidden" id="order_id" name="order_id" value="<%= order._id %>">
+                                                <input type="hidden" id="to" name="to" value="<%= order.to._id %>">
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <script src="/js/ajax/messages.js"></script>
+<%- include('../partials/footer.ejs') %>

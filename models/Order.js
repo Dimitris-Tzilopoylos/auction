@@ -50,6 +50,18 @@ const orderSchema = new mongoose.Schema({
         type:String,
         trim:true
     },
+    name:{
+        type:String,
+        trim:true
+    },
+    last_name:{
+        type:String,
+        trim:true
+    },
+    email:{
+        type:String,
+        trim:true
+    },
     address1:{
         type:String,
         trim:true,
@@ -75,12 +87,15 @@ const orderSchema = new mongoose.Schema({
         maxlength:30
     },
     paymentMethod:{
-        milength:10,
+        minlength:3,
         maxlength:30,
         type:String,
         required:true,
         trim:true,
         default:'bank'
+    },
+    zip:{
+        type:String,
     },
     status:{
         milength:10,
@@ -93,6 +108,35 @@ const orderSchema = new mongoose.Schema({
     product:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Product'
+    },
+    comment:{
+        type:String,
+        maxlength:40000
+    },
+    paymentID:{
+        type:String
+    },
+    payerID:{
+        type:String
+    },
+    parcelCondition:{
+        type:String,
+        default:'in-store'
+    },
+    parcelService:{
+        type:String
+    },
+    trackingNumber:{
+        type:String,
+    },
+    estimatedDeliveryDate:{
+        type:Date
+    },
+    dateReturned:{
+        type:Date
+    },
+    dateRefunded:{
+        type:Date
     }
 },{timestamps:true})
 

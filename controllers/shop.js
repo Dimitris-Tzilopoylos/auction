@@ -1,9 +1,11 @@
 const Category = require('../models/Category')
 const Supercategory = require('../models/Supercategory')
 const Product = require('../models/Product')
+const Country = require('../models/Country')
 const Bid = require('../models/Bid')
 const utils = require('../utils/utils')
 const app = require('../app')
+const Order = require('../models/Order')
 
 exports.getHomePage = async (req,res,next) => {
 
@@ -123,9 +125,10 @@ exports.bidProduct = async (req,res,next) => {
             req.session.last_bid = new Date()
         }
         product.end_price = req.body.end_price 
-        await product.save()
         const newBid = new Bid({user:req.body.user.user_id,product:product._id,price:product.end_price,currency:{symbol:product.currency.symbol,iso:product.currency.iso}})
+        product.last_bid = newBid
         await newBid.save()
+        await product.save()
         app.get('io').to(product._id.toString()).emit('new_evaluation',{
             end_price:product.end_price,
             user:{
@@ -135,8 +138,35 @@ exports.bidProduct = async (req,res,next) => {
                 bid:newBid
             }   
         })
+      
         res.status(201).send('You have submitted a new bid')
     } catch (error) {
         res.status(404).send(`<p class="alert alert-danger text-center">${error.message}</p>`)
     }
+}
+
+
+
+exports.getCheckout = async (req,res,next) => {
+    let checkoutError = null;
+    let checkoutMessage = null;
+    try {
+        if(req.session.setError && req.query.checkoutError) {
+            checkoutError = req.query.checkoutError
+            req.session.setError = false
+        }
+        if(req.session.setError && req.query.checkoutMessage) {
+            checkoutMessage = req.query.checkoutMessage
+            req.session.setError = false
+        }
+        
+        const order = await Order.findOne({_id:req.params.order_id,to:req.session.user._id,status:{$ne:'SOLD'}}).populate('product')
+        if(!order) throw new Error('This order is not valid')
+        const countries = await Country.find({region:'Europe'})
+        res.render('shop/checkout',{order,countries,checkoutError,checkoutMessage})
+    } catch (error) {
+        req.session.setError = true
+        res.redirect(`/dashboard/orders`)
+    }
+ 
 }

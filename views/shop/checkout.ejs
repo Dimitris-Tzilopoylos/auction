@@ -1,0 +1,340 @@
+<%- include('../partials/header.ejs') %>
+<%- include('../partials/sidebar.ejs') %>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <%- include('../partials/admin-navbar.ejs') %>
+                <div class="container">
+                    <div class="card">
+                        <div class="card-top border-bottom text-center"> <a href="/" class="btn btn-sm btn-success shadow-sm"> Back to shop</a> <span id="logo">Checkout</span> </div>
+                        <div class="card-body">
+                            <div class="row upper"> 
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-7">
+                                    <div class="left border">
+                                        <div class=""> <span class="header">Order Details</span>
+                                            <hr>
+                                            <!-- <div class="icons"> <img src="https://img.icons8.com/color/48/000000/visa.png" /> <img src="https://img.icons8.com/color/48/000000/mastercard-logo.png" /> <img src="https://img.icons8.com/color/48/000000/maestro.png" /> </div> -->
+                                        </div>
+                                        <form class="row needs-validation" id="checkoutForm">
+                                            <div class="col-md-6 form-group">
+                                                    <span>Name:</span> <input placeholder="Your name" name="name" type="text" required value="<%= user.name %>">
+                                            </div> 
+                                            <div class="col-md-6 form-group">
+                                                <span>Last Name:</span> <input placeholder="Your Last Name" name="last_name" type="text" required value="<%= user.last_name %>">
+                                            </div> 
+                                            <div class="col-md-6 form-group">
+                                                <span>Email:</span> <input placeholder="example@example.com" name="email" type="email" required value="<%= user.email %>">
+                                            </div> 
+                                            <div class="col-md-6 form-group">
+                                                <span>Country:</span> 
+                                                <select name="country" id="country" >
+                                                    <% for(let country of countries){ %>
+                                                    <option value="<%= country.name %>" <% if(country.name.trim().toLowerCase() == user.country.trim().toLowerCase()){ %> selected <% } %>><%= country.name %></option>
+                                                    <% } %>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-md-6 form-group">
+                                                <span>Address 1:</span> <input placeholder="Address 1" name="address1" type="text" required value="<%= user.address1 %>">
+                                            </div> 
+                                            <div class="col-md-6 form-group">
+                                                <span>Address 2:</span> <input placeholder="Address 2" name="address2" type="text" value="<%= user.address2 %>">
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <span>Phone:</span> <input placeholder="Phone" name="phone" type="text" required value="<%= user.phone %>">
+                                            </div> 
+                                            <div class="col-md-6 form-group">
+                                                <span>Mobile:</span> <input placeholder="Mobile" name="mobile" type="text" value="<%= user.mobile %>">
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <span>Zip:</span> <input placeholder="Zip Code" name="zip" type="text" value="<%= user.zip %>">
+                                                <div class="valid-feedback"></div>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <span>City:</span> <input placeholder="City" name="city" type="text" required value="<%= user.city %>">
+                                            </div>
+                                            <div class="col-md-12">
+                                                <span>Payment Method</span>
+                                                <select name="paymentMethod" id="paymentMethod" onchange="getPaymentMethod(this.value)">
+                                                    <option value="visa" <% if(order.paymentMethod == 'visa'){ %> selected <% } %> >Visa</option>
+                                                    <option value="bank" <% if(order.paymentMethod == 'bank'){ %> selected <% } %> >Bank</option>
+                                                    <option value="paypal" <% if(order.paymentMethod == 'paypal'){ %> selected <% } %> >Paypal</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-12 form-group">
+                                                <span>Order comments:</span> <textarea name="comments" id="comments" class="form-control" rows="4"></textarea>
+                                            </div> 
+
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="right border">
+                                        <div class="header">Order Summary</div>
+                                        <p><%= order.product.name %></p>
+                                        <div class="row item">
+                                            <div class="col-4 align-self-center"><img class="img-fluid" src="<%= order.product.images[0] %>"></div>
+                                            <div class="col-8">
+                                                <div class="row"><b><%= order.product.end_price+" "+order.product.currency.symbol %></b></div>
+                                                <!-- <div class="row text-muted">Be Legandary Lipstick-Nude rose</div>
+                                                <div class="row">Qty:1</div> -->
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row lower">
+                                            <div class="col text-left">Subtotal</div>
+                                            <div class="col text-right"><%= order.product.end_price+" "+order.product.currency.symbol %></div>
+                                        </div>
+                                        <div class="row lower">
+                                            <div class="col text-left">Delivery</div>
+                                            <div class="col text-right">Free</div>
+                                        </div>
+                                        <div class="row lower">
+                                            <div class="col text-left"><b>Total to pay</b></div>
+                                            <div class="col text-right"><b><%= order.product.end_price+" "+order.product.currency.symbol %></b></div>
+                                        </div>
+                                        <div class="row  my-2" id="btnContainer">
+                                            <button class="btn btn-primary btn-block shadow-sm" id="placeOrder">Place order</button>
+                                        </div> 
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div> 
+                        
+                        </div>
+                    </div>
+                </div>
+<style>
+    body {
+    min-height: 100vh;
+    background-color: rgb(0, 0, 34);
+    font-size: 0.8rem
+}
+
+.card {
+    max-width: 1000px;
+    margin: 2vh
+}
+
+.card-top {
+    padding: 0.7rem 5rem
+}
+
+.card-top a {
+    float: left;
+    margin-top: 0.7rem
+}
+
+#logo {
+    font-family: 'Dancing Script';
+    font-weight: bold;
+    font-size: 1.6rem
+}
+
+.card-body {
+    padding: 0 5rem 5rem 5rem;
+  
+    background-size: cover;
+    background-repeat: no-repeat
+}
+
+@media(max-width:768px) {
+    .card-body {
+        padding: 0 1rem 1rem 1rem;
+        background-size: cover;
+        background-repeat: no-repeat
+    }
+
+    .card-top {
+        padding: 0.7rem 1rem
+    }
+}
+
+ 
+
+.upper {
+    padding: 1rem 0;
+    justify-content: space-evenly
+}
+
+#three {
+    border-radius: 1rem;
+    width: 22px;
+    height: 22px;
+    margin-right: 3px;
+    border: 1px solid blue;
+    text-align: center;
+    display: inline-block
+}
+
+#payment {
+    margin: 0;
+    color: blue
+}
+ 
+ 
+input,select {
+    border: 1px solid rgba(0, 0, 0, 0.137);
+    padding: 1vh;
+    margin-bottom: 4vh;
+    outline: none;
+    width: 100%;
+    background-color: rgb(247, 247, 247)
+}
+
+input:focus::-webkit-input-placeholder {
+    color: transparent
+}
+
+.header {
+    font-size: 1.5rem
+}
+
+.left {
+    background-color: #ffffff;
+    padding: 2vh
+}
+
+.left img {
+    width: 2rem
+}
+
+.left .col-4 {
+    padding-left: 0
+}
+
+.right .item {
+    padding: 0.3rem 0
+}
+
+.right {
+    background-color: #ffffff;
+    padding: 2vh
+}
+
+.col-8 {
+    padding: 0 1vh
+}
+
+.lower {
+    line-height: 2
+}
+
+ 
+
+.btn:focus {
+    box-shadow: none;
+    outline: none;
+    box-shadow: none;
+    color: white;
+    -webkit-box-shadow: none;
+    -webkit-user-select: none;
+    transition: none
+}
+
+.btn:hover {
+    color: white
+}
+
+a {
+    color: black
+}
+
+a:hover {
+    color: black;
+    text-decoration: none
+}
+
+input[type=checkbox] {
+    width: unset;
+    margin-bottom: unset
+}
+ 
+</style>
+
+
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+<script>
+    
+    function getPaymentMethod(paymentMethod){
+        if(paymentMethod === "paypal") {
+            getPaypal()
+            return
+        }
+        if(paymentMethod === "visa" || paymentMethod === "bank") {
+            document.getElementById('btnContainer').innerHTML = '<button class="btn btn-primary btn-block shadow-sm" id="placeOrder">Place order</button>'
+            return
+        }else{
+            document.getElementById('placeOrder').disabled = true
+        }
+
+    }
+
+    function formData() {
+        var form = document.getElementById('checkoutForm')
+        var obj = {}
+        for(let i=0;i<form.elements.length;i++){
+            obj[form.elements[i].name] = form.elements[i].value
+        }
+        return  obj
+    }
+    function getPaypal(){
+        document.getElementById('placeOrder').innerHTML = ''
+        document.getElementById('placeOrder').classList.remove('btn-primary') 
+        document.getElementById('placeOrder').classList.add('btn-warning')
+        document.getElementById('placeOrder').classList.add('btn-block')
+        document.getElementById('placeOrder').style.width = '100%'
+        paypal.Button.render({
+            env: 'sandbox', // Or 'production'
+            // Set up the payment:
+            // 1. Add a payment callback
+            payment: function(data, actions) {
+            // 2. Make a request to your server
+            return actions.request.post('/paypal/create-payment/',{
+                amount: <%- order.price %>,
+                currency: <%- order.currency %>,
+                orderId:'<%- order._id %>',
+                productId:'<%- order.product._id %>',
+                orderDetails: JSON.stringify(formData())
+            })
+                .then(function(res) {
+                    console.log(res)
+                return res.id;
+                }).catch(function(error){
+                    console.log(error.data)
+                });
+            },
+            // Execute the payment:
+            // 1. Add an onAuthorize callback
+            onAuthorize: function(data, actions) {
+            // 2. Make a request to your server
+            return actions.request.post('/paypal/execute-payment/', {
+                paymentID: data.paymentID,
+                payerID:   data.payerID,
+                orderId:'<%- order._id %>',
+                productId:'<%- order.product._id %>',
+                orderDetails: JSON.stringify(formData())
+            })
+                .then(function(res) {
+                // 3. Show the buyer a confirmation message.
+                }).catch(function(err){
+
+                });
+            }
+        }, '#placeOrder');
+    }
+
+    <% if(order.paymentMethod === 'paypal'){ %>
+        getPaypal()
+    <% } %>
+</script>
+<%- include('../partials/footer.ejs') %>

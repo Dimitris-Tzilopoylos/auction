@@ -11,8 +11,14 @@ const authCoreRoutes = require('./router/core/login')
 const dashboardCoreRoutes = require('./router/core/dashboard')
 const errorCoreRoutes = require('./router/core/errors')
 const shopCoreRoutes = require('./router/core/shop')
+const messageRoutes = require('./router/core/messages')
+const paypalRoutes = require('./router/api/paypal')
 const sessionRedis = require('./redis')
 
+
+/// &&&& CRONJOBS
+const automatedOrderCreation = require('./cronjobs/automatedOrderCreation')
+ 
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
@@ -24,6 +30,8 @@ app.use(localCaching)
 app.use(shopCoreRoutes)
 app.use(authCoreRoutes)
 app.use(dashboardCoreRoutes)
+app.use(messageRoutes)
+app.use("/paypal",paypalRoutes)
 app.use(errorCoreRoutes)
 
 app.use("*",(req,res,next)=>{

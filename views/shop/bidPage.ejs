@@ -385,7 +385,22 @@
 /*# sourceMappingURL=style.css.map */
 </style>
 
-
+<button style="display:none;" type="button" id="alert-modal" data-toggle="modal" data-target="#alertBidEnding"></button>
+<div class="modal fade" id="alertBidEnding" tabindex="-1" role="dialog" aria-labelledby="alertBidEnding" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+      <p class="modal-title" id="alertBidEndingTitle"><i class="fas fa-info"></i> <span class="text-primary">Warning</span></p>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="text-primary text-center">This product has just been sold. You will be redirected to the home page in: <span class="text-danger font-weight-bold" id="timer-redirect">3</span></p>
+    </div>
+    </div>
+  </div>
+</div>
 
 <script src="/vendor/chart.js/Chart.min.js" ></script>
 <script src="/js/socket.io.js"></script>

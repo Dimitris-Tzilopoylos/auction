@@ -10,39 +10,33 @@
         <tr>
             <th>OrderId</th>
             <th>Product</th>
-            <th>From</th>
+            <th>To</th>
             <th>Price</th>
+            <th>Payment Method</th>
             <th>Date</th>
             <th>Status</th>
-            <th>Details</th>
-            <th>Actions</th>
+            <th>Parcel</th>
+            <th>Parcel Status</th>
+            <th>E.D.Date</th>
+            <th>Order Details</th>
+            <th>Order Actions</th>
         </tr>
     </thead>
-    <% if(obj && obj.length > 100 ){ %>
-    <tfoot>
-        <tr>
-            <th>OrderId</th>
-            <th>Product</th>
-            <th>From</th>
-            <th>Price</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th>Details</th>
-            <th>Actions</th>
-        </tr>
-    </tfoot>
-    <% } %>
     <tbody>
         <% for(let i=0;i<obj.length;i++){ %>
         <tr>
             <td><%= obj[i]._id %></td>
             <td><%= obj[i].product && obj[i].product.name %></td>
-            <td><a href="javascript:void(0)" onclick="loadUserDetails('<%= obj[i].from.name %>','<%= obj[i].from.last_name %>','<%= obj[i].from.city %>','<%= obj[i].from.country %>','<%= obj[i].from.phone %>','<%= obj[i].from.mobile %>','<%= obj[i].from.email %>','<%= obj[i].from.profile_img %>')"><%= obj[i].from.name+" "+obj[i].from.last_name %></a></td>
-            <td><p class="badge badge-success"><%= obj[i].price+" "+obj[i].currency.symbol+" ("+obj[i].currency.iso+ ")" %></p></td>
+            <td><a href="javascript:void(0)" onclick="loadUserDetails('<%= obj[i].to.name %>','<%= obj[i].to.last_name %>','<%= obj[i].to.city %>','<%= obj[i].to.country %>','<%= obj[i].to.phone %>','<%= obj[i].to.mobile %>','<%= obj[i].to.email %>','<%= obj[i].to.profile_img %>')"><%= obj[i].to.name+" "+obj[i].to.last_name %></a></td>
+            <td><p class="badge badge-success w-100 shadow-sm"><%= obj[i].price+" "+obj[i].currency.symbol+" ("+obj[i].currency.iso+ ")" %></p></td>
+            <td class="text-center text-primary"><%= obj[i].paymentMethod %></td>
             <td><p  ><%= new Date(obj[i].date).toUTCString() %> </td>
             <td><% if(obj[i].status !== "completed"){ %> <span class="badge badge-danger font-weight-bold"><%= obj[i].status %></span> <% }else{ %>  <span class="badge badge-success"><%= obj[i].status %></span>  <% } %></td>
-            <td><a href="/dashboard/order/<%=obj[i]._id%>/details" class="btn btn-block btn-outline-success shadow-sm"><i class="fas fa-info"></i></a></td>
-            <td><a <% if(obj[i].status !== 'completed') { %> class="btn btn-block btn-outline-primary shadow-sm" href="/dashboard/order/<%=obj[i]._id%>" <% }else{ %>class="btn btn-block btn-outline-danger btn-disabled shadow-sm" href="#" disabled <% } %> >Actions</a></td>
+            <td><span class="badge badge-warning shadow-sm w-100"><%= obj[i].parcel ? obj[i].parcel : '-' %></span></td>
+            <td><span class="badge badge-danger shadow-sm w-100"><%= obj[i].parcelCondition ? obj[i].parcelCondition : '-' %></span></td>
+            <td><span class="text-primary"><%= obj[i].estimatedDeliveryDate ? new Date(obj[i].estimatedDeliveryDate).toUTCString() : '-' %></span></td>
+            <td><a href="/dashboard/order/<%=obj[i]._id%>/details" class="btn btn-info w-100 shadow-sm"><i class="fas fa-info"></i> </a></td>
+            <td><a href="/dashboard/order/<%=obj[i]._id%>/manage" class="btn btn-primary  w-100shadow-sm"><i class="fas fa-fw fa-wrench"></i>  </a></td>
         </tr>
         <% } %>
     </tbody>

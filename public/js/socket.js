@@ -35,6 +35,21 @@ socket.on("connect_error", () => {
   }, 1000);
 })
 
+
+socket.on('auction-ended',function(){
+  document.getElementById('alert-modal').click()
+  var x = 4
+  var y = setInterval(function(){
+    x = x-1
+   if(x>-1)
+   document.getElementById('timer-redirect').innerHTML = x 
+   if(x==-1) {
+     window.location.replace("/");
+     clearInterval(y)
+   }
+  },1000)
+})
+
 function setGlobalBid(data){
       console.log(data)
     return {data:data.map((d)=>d.price),labels:data.map((d)=>d.createdAt),currency:data.currency}

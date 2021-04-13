@@ -1,0 +1,323 @@
+<%- include('../partials/header.ejs') %>
+<%- include('../partials/sidebar.ejs') %>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <%- include('../partials/admin-navbar.ejs') %>
+                
+                <!-- Begin Page Content -->
+                <div class="container" style="position:relative">
+                    <div class="row">
+                        <% if(discussionError) { %>
+                        <div class="col-md-12">
+                            <p class="alert alert-danger shadow-sm text-center"  onclick="this.style.display='none'"><%= discussionError %></p>
+                        </div>
+                        <% } %>
+                        <% if(discussionMessage) { %>
+                            <div class="col-md-12">
+                                <p class="alert alert-success shadow-sm text-center"  onclick="this.style.display='none'"><%= discussionMessage %></p>
+                            </div>
+                            <% } %>
+                        <div class="col-md-12 bg-white" style="background:white;height:100%;max-height:750px;overflow-y:auto;position:relative;" id="message-overflow-container">
+                            <div class="bg-light" style="z-index:100;position:sticky;width:100%;left:-10;top:0;right:0;bottom:0;padding:25px;border-radius:15px">
+                                <p id="subject" class="text-right text-primary badge badge-light shadow-sm" style="font-size:22px"><%= messages && messages.subject %></p>
+                                <p class="badge badge-<%= messages.status ? 'danger' : 'success' %> shadow-sm"><%= messages.status ? 'Closed' : 'Open' %></p>
+                                <form action="/messages/discussion/<%= messages._id %>" method="POST" id="closeDiscussionForm">
+                                    <input type="hidden" name="discussion" value="<%= messages._id %>">
+                                    <% if(!messages.status) { %>
+                                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#closeDiscussion">Close Discussion</button>
+                                    <% } %>
+                                </form>
+                            </div>
+                            <div class="chat-message p-2 bg-white  card-body" style="background:white;">
+                                <hr>
+                                <ul class="chat" id="chat-messages">
+                                    <li class="left clearfix p-2 shadow" style="border-radius: 20px;">
+                                        <span class="chat-img pull-left">
+                                            <img src="/<%= messages.from.profile_img %>" alt="User Avatar">
+                                        </span>
+                                        <div class="chat-body clearfix bg-light shadow-sm" style="border-radius:20px;">
+                                            <div class="header">
+                                                <strong class="primary-font"><%= messages.from.name+" "+messages.from.last_name %></strong>
+                                                <small class="pull-right text-muted"><i class="fa fa-clock-o"></i> <%= messages.createdAt.toUTCString() %></small>
+                                            </div>
+                                            <p style="word-wrap: break-word;font-size:15px;">
+                                                <%= messages.message %>
+                                            </p>
+                                        </div>
+                                    </li>
+                                    <% for(let msg of messages.responses) { %>
+                                    <li class="left clearfix p-2 shadow" style="border-radius:20px;">
+                                        <span class="chat-img pull-left">
+                                            <img src="/<%= msg.from.profile_img %>" alt="User Avatar" class="my-2">
+                                        </span>
+                                        <div class="chat-body clearfix bg-light shadow-sm" style="border-radius:20px;">
+                                            <div class="header">
+                                                <strong class="primary-font"><%= msg.from.name+" "+msg.from.last_name %></strong>
+                                                <small class="pull-right text-muted"><i class="fas fa-clock-o"></i> <%= msg.createdAt.toUTCString() %></small>
+                                            </div>
+                                            <p style="word-wrap: break-word;font-size:15px;">
+                                                <%= msg.message %>
+                                            </p>
+                                        </div>
+                                    </li>
+                                    <% } %>
+                                </ul>
+                            </div>
+                            <% if(!messages.status){ %>
+                            <form class="chat-box bg-white my-0" id="messageForm">
+                                <p id="errorMsg" class="alert alert-danger shadow-sm" onclick="this.style.display='none'" style="display:none;"></p>
+                                <div class="input-group row">
+                                    <div class="col-md-9 col-xs-9 d-flex justify-content-center">
+                                      <textarea class="form-control border no-shadow no-rounded" rows="1" id="message-area"  name="message"> </textarea>
+                                    </div>
+                                    <div class="col-md-3 col-xs-3">
+                                       <span class="input-group-btn">
+                                            <button class="btn btn-primary shadow-sm" type="button" id="sendBtn" onclick="sendMessage('<%= user._id %>','<%= messages.to._id %>','<%= messages._id %>')"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                                        </span> 
+                                        
+                                    </div>
+                                    
+                                </div><!-- /input-group -->	
+                            </form>
+                            <% } %>    
+                            <div id="scroll"></div>   
+                        </div>        
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        </div>
+        <% if(!messages.status) { %>
+        <script src="/js/socket.io.js"></script>
+        <script src="/js/ajax/messages.js"></script>
+        <script src="/js/chat.js"></script>
+        <script>
+            joinChat('<%= user._id %>')
+        </script>
+        <% } %>
+        <style>
+            .bg-white {
+          background-color: #fff;
+        }
+        
+        .friend-list {
+          list-style: none;
+        margin-left: -40px;
+        }
+        
+        .friend-list li {
+          border-bottom: 1px solid #eee;
+        }
+        
+        .friend-list li a img {
+          float: left;
+          width: 45px;
+          height: 45px;
+          margin-right: 10px;
+        }
+        
+         .friend-list li a {
+          position: relative;
+          display: block;
+          padding: 10px;
+          transition: all .2s ease;
+          -webkit-transition: all .2s ease;
+          -moz-transition: all .2s ease;
+          -ms-transition: all .2s ease;
+          -o-transition: all .2s ease;
+        }
+        
+        .friend-list li.active a {
+          background-color: #f1f5fc;
+        }
+        
+        .friend-list li a .friend-name, 
+        .friend-list li a .friend-name:hover {
+          color: #777;
+        }
+        
+        .friend-list li a .last-message {
+          width: 65%;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+        
+        .friend-list li a .time {
+          position: absolute;
+          top: 10px;
+          right: 8px;
+        }
+        
+        small, .small {
+          font-size: 85%;
+        }
+        
+        .friend-list li a .chat-alert {
+          position: absolute;
+          right: 8px;
+          top: 27px;
+          font-size: 10px;
+          padding: 3px 5px;
+        }
+        
+        .chat-message {
+          padding: 60px 20px 115px;
+        }
+        
+        .chat {
+            list-style: none;
+            margin: 0;
+        }
+        
+        .chat-message{
+            background: #f9f9f9;  
+        }
+        
+        .chat li img {
+          width: 45px;
+          height: 45px;
+          border-radius: 50em;
+          -moz-border-radius: 50em;
+          -webkit-border-radius: 50em;
+        }
+        
+        img {
+          max-width: 100%;
+        }
+        
+        .chat-body {
+          padding-bottom: 20px;
+        }
+        
+        .chat li.left .chat-body {
+          margin-left: 70px;
+          background-color: #fff;
+        }
+        
+        .chat li .chat-body {
+          position: relative;
+          font-size: 11px;
+          padding: 10px;
+          border: 1px solid #f1f5fc;
+          box-shadow: 0 1px 1px rgba(0,0,0,.05);
+          -moz-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+          -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+        }
+        
+        .chat li .chat-body .header {
+          padding-bottom: 5px;
+          border-bottom: 1px solid #f1f5fc;
+        }
+        
+        .chat li .chat-body p {
+          margin: 0;
+        }
+        
+        .chat li.left .chat-body:before {
+          position: absolute;
+          top: 10px;
+          left: -8px;
+          display: inline-block;
+          background: #fff;
+          width: 16px;
+          height: 16px;
+          border-top: 1px solid #f1f5fc;
+          border-left: 1px solid #f1f5fc;
+        }
+        
+        .chat li.right .chat-body:before {
+          position: absolute;
+          top: 10px;
+          right: -8px;
+          display: inline-block;
+          background: #fff;
+          width: 16px;
+          height: 16px;
+          border-top: 1px solid #f1f5fc;
+          border-right: 1px solid #f1f5fc;
+
+        }
+        
+        .chat li {
+          margin: 15px 0;
+        }
+        
+        .chat li.right .chat-body {
+          margin-right: 70px;
+          background-color: #fff;
+        }
+        
+        .chat-box {
+        /*
+          position: fixed;
+          bottom: 0;
+          left: 444px;
+          right: 0;
+        */
+          padding: 15px;
+          border-top: 1px solid #eee;
+          transition: all .5s ease;
+          -webkit-transition: all .5s ease;
+          -moz-transition: all .5s ease;
+          -ms-transition: all .5s ease;
+          -o-transition: all .5s ease;
+        }
+        
+        .primary-font {
+          color: #3c8dbc;
+        }
+        
+        a:hover, a:active, a:focus {
+          text-decoration: none;
+          outline: 0;
+        }
+        </style>
+        <div class="modal fade" id="closeDiscussion" tabindex="-1" role="dialog" aria-labelledby="closeDiscussion" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalCenterTitle"><i class="fas fa-alert"></i></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <h4 class="text-primary-text-center">Are you sure you want to close this discussion?</h4>
+              <span class="text-danger">Closed discussions cannot be opened.</span>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger btn-sm shadow-sm" data-dismiss="modal">No</button>
+              <button type="button" class="btn btn-primary btn-sm shadow-sm" id="submitBtn">Yes</button>
+            </div>
+            </div>
+          </div>
+          </div>
+          <button style="display:none;" type="button" id="alert-modal" data-toggle="modal" data-target="#closeDiscussionWarning"></button>
+          <div class="modal fade" id="closeDiscussionWarning" tabindex="-1" role="dialog" aria-labelledby="closeDiscussionWarning" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="closeDiscussionWarningTitle"><i class="fas fa-info"></i> <span class="text-primary">Info</span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p class="text-primary text-center">The discussion was closed. You will be redirected back in <span class="text-danger font-weight-bold" id="timer-redirect">3</span></p>
+              </div>
+              </div>
+            </div>
+          </div>
+          <script>
+              document.getElementById('submitBtn').addEventListener('click',function(e){
+              document.getElementById('closeDiscussionForm').submit()
+              
+            })
+          </script>
+<%- include('../partials/footer.ejs') %>

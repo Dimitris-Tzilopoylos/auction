@@ -1,7 +1,7 @@
-const mognoose = require('mongoose')
+const mongoose = require('mongoose')
 
 
-const productSchema = new mognoose.Schema({
+const productSchema = new mongoose.Schema({
     name:{
         type:String,
         required:true,
@@ -10,15 +10,15 @@ const productSchema = new mognoose.Schema({
         maxlength:90
     },
     supercategory:{
-        type:mognoose.Schema.Types.ObjectId,
+        type:mongoose.Schema.Types.ObjectId,
         ref:'Supercategory'
     },
     category:{
-        type:mognoose.Schema.Types.ObjectId,
+        type:mongoose.Schema.Types.ObjectId,
         ref:'Category'
     },
     user:{
-        type:mognoose.Schema.Types.ObjectId,
+        type:mongoose.Schema.Types.ObjectId,
         ref:'User'
     },
     start_price:{
@@ -36,7 +36,7 @@ const productSchema = new mognoose.Schema({
     },
     sold:{
         user:{
-            type:mognoose.Schema.Types.ObjectId,
+            type:mongoose.Schema.Types.ObjectId,
             ref:'User'
         },
         date: {
@@ -87,9 +87,12 @@ const productSchema = new mognoose.Schema({
             type:String,
             required:true
         }
- 
+    },
+    last_bid:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Bid'
     }
 },{timestamps:true})
 
 
-module.exports = mognoose.model('Product',productSchema)
+module.exports = mongoose.model('Product',productSchema)

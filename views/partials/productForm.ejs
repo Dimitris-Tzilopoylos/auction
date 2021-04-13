@@ -14,20 +14,20 @@
             <option value="" class=""></option>
             <option value="NEW" class="" <%= product && product.status == "NEW" ? 'selected' : '' %>>NEW</option>
             <option value="READY" class="" <%= product && product.status == "READY" ? 'selected' : '' %>>READY</option>
-            
+            <option value="SOLD" class="" <%= product && product.status == "SOLD" ? 'selected' : '' %>>SOLD</option>
         </select>
     </div>
     <input type="hidden" name="product_id" value="<%= product._id %>">
     <div class="form-group col-md-6">
         <label for="bid_date" class="col-12 col-form-label">Start Date</label>
         <div class="col-12">
-          <input class="form-control" id="bid_date" name="bid_date" type="datetime-local" value="<%= product  && product.bid_date && product.bid_date.toISOString() %>"  >
+          <input class="form-control" id="bid_date" name="bid_date" type="datetime-local" value="<%= product  && product.bid_date &&  product.bid_date.toISOString().split('.')[0] %>"  >
         </div>
     </div>
     <div class="form-group col-md-6">
         <label for="bid_end_date" class="col-12 col-form-label">End Date</label>
         <div class="col-12">
-          <input id="bid_end_date" name="bid_end_date" class="form-control" type="datetime-local" value="<%= product && product.bid_end_date && product.bid_end_date.toISOString() %>"  >
+          <input id="bid_end_date" name="bid_end_date" class="form-control" type="datetime-local" value="<%= product && product.bid_end_date && product.bid_end_date.toISOString().split('.')[0] %>"  >
         </div>
     </div>
     <div class="form-group col-md-12">

@@ -13,6 +13,8 @@ router.get('/dashboard/product/:product_id/bids',isAdmin,dashboardControllers.ge
 router.get('/dashboard/orders',isAuth,dashboardControllers.myOrderPage)
 router.get('/dashboard/orders/ajax',isAuth,dashboardControllers.myOrderPageAjax)
 router.get('/dashboard/order/:order_id',isAuth,dashboardControllers.productDetailsBeforeCheckout)
+router.get('/dashboard/order/:order_id/details',isAuth,dashboardControllers.orderDetails)
+router.get('/dashboard/order/:order_id/manage',isAdmin,dashboardControllers.manageOrderPage)
 router.get('/dashboard/product/:product_id',isAdmin,dashboardControllers.productDetails)
 router.get('/dashboard/users',isAdmin,dashboardControllers.manageUsers)
 router.get('/dashboard/users/ajax',isAdmin,dashboardControllers.getUsersAjax)
