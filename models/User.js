@@ -17,6 +17,11 @@ const userSchema = new mongoose.Schema({
         required:true,
         trim:true
     },
+    zip:{
+        type:String,
+        trim:true,
+        minlength:4
+    },
     email:{
         type:String,
         maxlength:50,

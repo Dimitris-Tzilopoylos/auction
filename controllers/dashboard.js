@@ -5,7 +5,7 @@ const Category  = require('../models/Category')
 const Bid  = require('../models/Bid')
 const utils = require('../utils/utils')
 const Order = require('../models/Order')
-
+const Country = require('../models/Country')
 
 
 
@@ -18,7 +18,7 @@ exports.getDashboard = async (req,res,next) => {
 
     // const total_my_products = await Product.countDocuments({user:req.session.user._id})
     // const total_my_bids =  await Bid.countDocuments({user:req.session.user._id})
-    res.render('index')
+    res.render('admin/index')
 } 
 
 exports.getReports = async (req,res,next) => {
@@ -27,7 +27,7 @@ exports.getReports = async (req,res,next) => {
         return 
     }
 
-    res.render('charts')
+    res.render('admin/charts')
 } 
 
 exports.getProducts = async (req,res,next) => {
@@ -45,7 +45,7 @@ exports.getProducts = async (req,res,next) => {
         data.showForm = req.query.showForm && req.session.setError ? 1 : 0
         data.productError = req.query.productError && req.session.setError  ? req.query.productError  : null 
         delete req.session.setError
-        res.render('tables',data)
+        res.render('admin/tables',data)
     } catch (error) {
  
         res.redirect('/dashboard')
@@ -73,7 +73,7 @@ exports.getProfile = async (req,res,next) => {
         return 
     }
 
-    res.render('profile')
+    res.render('admin/profile')
 } 
 
 exports.getBids = async (req,res,next) => {
@@ -87,7 +87,7 @@ exports.getBids = async (req,res,next) => {
         if(!product) throw new Error('No such product')
         const bids = await Bid.find({product:product._id}).sort({'createdAt':1}).populate('user','name last_name city country profile_img')
         if(!bids) throw new Error()
-        res.render('charts',{product,bids})
+        res.render('admin/charts',{product,bids})
     } catch (error) {
         
         res.redirect('/dashboard/products')
@@ -105,14 +105,13 @@ exports.getBidsByProductAjax = async (req,res,next) => {
     }
 }
 
-
 exports.getOrders = async (req,res,next) => {
     if(!req.session.isAuthenticated) {
         res.redirect('/login?error=Please login first')
         return 
     }
 
-    res.render('table')
+    res.render('admin/table')
 } 
 
 exports.createProduct = async (req,res,next) => {
@@ -225,7 +224,7 @@ exports.productDetails = async (req,res,next) => {
         const hasBids = await Bid.countDocuments({product:req.params.product_id})
         const product = await Product.findOne({_id:req.params.product_id,user:req.session.user._id}).populate('sold.user','name email city country address1 address2 profile_img last_name phone mobile')
         if(!product) throw new Error('Product was not found')
-        res.render('adminProductDetails',{product,hasBids,productError:req.query.productError || null})
+        res.render('admin/adminProductDetails',{product,hasBids,productError:req.query.productError || null})
     } catch (error) {
         req.session.setError = true 
         res.redirect('/dashboard/products?productError=Product was not found')
@@ -248,6 +247,7 @@ exports.myBids = async (req,res,next) => {
 exports.myOrderPage = async (req,res,next) => {
     let orderError;
     let orderMessage;
+    let orders;
     if(req.session.setError && req.query.orderError) {
         orderError = req.query.orderError
     }
@@ -258,9 +258,13 @@ exports.myOrderPage = async (req,res,next) => {
         if(!req.session.isAuthenticated){
             throw new Error('Please login first')
         }
-        const orders = await Order.distinct('status',{to:req.session.user._id})
+        if(!req.session.user.isAdmin)
+            orders = await Order.distinct('status',{to:req.session.user._id})
+        else 
+            orders = await Order.distinct('status',{})
         req.session.setError = false
-        res.render('myOrders',{orders,orderError,orderMessage})
+        const renderPage = req.session.user.isAdmin  ? 'admin/adminOrders' : 'admin/myOrders'
+        res.render(renderPage,{orders,orderError,orderMessage})
     } catch (error) {
         error.status = 400
         error.message = 'Please login first'
@@ -273,21 +277,33 @@ exports.myOrderPage = async (req,res,next) => {
 exports.myOrderPageAjax = async (req,res,next) => {
     let data
     let allowedStatuses = ['pending','completed','needs-approval','canceled','rejected'];
+     
     try {
         if(!req.session.isAuthenticated){
            throw new Error('Please login first')
         }
-        if(!req.query.status) 
-            data = await utils.paginate(Order,req.query.page || 1,req.query.view || 12,{to:req.session.user._id},{},true,'from product')
+        if(!req.query.status){
+            if(!req.session.user.isAdmin)
+                data = await utils.paginate(Order,req.query.page || 1,req.query.view || 12,{to:req.session.user._id},{},true,'from product')
+            else 
+                data = await utils.paginate(Order,req.query.page || 1,req.query.view || 12,{},{},true,'to product')
+        }    
         else{
             if(allowedStatuses.includes(req.query.status)) {
-                data = await utils.paginate(Order,req.query.page || 1,req.query.view || 12,{to:req.session.user._id,status:req.query.status},{},true,'from product')
+                if(!req.session.user.isAdmin)
+                    data = await utils.paginate(Order,req.query.page || 1,req.query.view || 12,{to:req.session.user._id,status:req.query.status},{},true,'from product')
+                else
+                    data = await utils.paginate(Order,req.query.page || 1,req.query.view || 12,{status:req.query.status},{},true,'to product')
             }else{
-                data = await utils.paginate(Order,req.query.page || 1,req.query.view || 12,{to:req.session.user._id},{},true,'from product')
+                if(!req.session.user.isAdmin)
+                    data = await utils.paginate(Order,req.query.page || 1,req.query.view || 12,{to:req.session.user._id},{},true,'from product')
+                else 
+                    data = await utils.paginate(Order,req.query.page || 1,req.query.view || 12,{},{},true,'to product')
             }
         }
         if(!data.obj) throw new Error()
-        res.status(200).render('ajax/orders',data)
+        const renderPage = req.session.user.isAdmin  ? 'ajax/adminOrders' : 'ajax/orders'
+        res.status(200).render(renderPage,data)
     } catch (error) {
         res.status(404).send("<p class='alert alert-primary'>You have no orders at the moment</p>")
     }
@@ -309,7 +325,7 @@ exports.makeProductSold = async (req,res,next) => {
         product = product 
         if(product.sold.user) throw new Error('This product is already sold!')
         
-        let last_bid = await Bid.find({product:product._id}).sort({'createdAt':1}).populate('user','_id name last_name email city country address1 address2 phone mobile profile_img').limit(1)
+        let last_bid = await Bid.find({product:product._id}).sort({'createdAt':-1}).populate('user','_id name last_name email city country address1 address2 phone mobile profile_img').limit(1)
         if(!last_bid) throw new Error('This product has no bids')
         last_bid = last_bid[0]
         product.sold = { 
@@ -365,7 +381,60 @@ exports.productDetailsBeforeCheckout = async (req,res,next) => {
             }
         }
         req.session.setError = false
-        res.render('orderDetails',{order,orderMessage,orderError,checkout:order.status == 'needs-approval' ? true : false})
+        res.render('admin/orderDetails',{order,orderMessage,orderError,checkout:order.status == 'needs-approval' ? true : false})
+    } catch (error) {
+        console.log(error)
+        res.redirect('/dashboard/orders')
+    }
+}
+
+exports.manageOrderPage = async (req,res,next) => {
+    try {
+        const order_id = req.params.order_id
+        if(!order_id) throw new Error('No such Order')
+        const parcelServices = ['UPS','TNT','ACS','DHL'];
+        const order = await Order.findOne({_id:order_id}).populate('to','name email last_name address1 address2 profile_img city country phone mobile blacklist isAdmin').populate('product') 
+        const countries = await Country.find({region:'Europe'})
+        if(!order) throw new Error('No such Order')
+        res.render('admin/manageOrder',{order,parcelServices,countries})
+    } catch (error) {
+        req.session.setError = true
+        res.redirect(`/dashboard/orders?orderError=Order with id : ${req.params.order_id} was not found`)
+    }
+}
+
+exports.orderDetails = async (req,res,next) => {
+    let orderError;
+    let orderMessage;
+    let order;
+    if(req.session.setError && req.query.orderError) {
+        orderError = req.query.orderError
+    }
+    if(req.session.setError && req.query.orderMessage) {
+        orderError = req.query.orderMessage
+    }
+    try {
+        const {order_id} = req.params
+ 
+        if(!order_id) throw new Error('Bad request')
+        if(!req.session.user.isAdmin)
+            order = await Order.findOne({_id:order_id,to:req.session.user._id,status:'completed'}).populate('to','name email last_name address1 address2 city country phone mobile blacklist isAdmin').populate('product','name end_price images status start_price')
+        else
+            order = await Order.findOne({_id:order_id}).populate('to','name email last_name address1 address2 city country phone mobile blacklist isAdmin').populate('product')
+        if(!order) throw new Error('Bad request')
+        if(!order.product) throw new Error('Bad request')
+        if(order) {
+            if(order.to.blacklist) {
+                res.redirect('/logout')
+                return
+            }
+            if(order.to.isAdmin) {
+                res.redirect('/dashboard')
+                return
+            }
+        }
+        req.session.setError = false
+        res.render('admin/orderCompletedDetails',{order,orderMessage,orderError})
     } catch (error) {
         console.log(error)
         res.redirect('/dashboard/orders')
@@ -382,7 +451,7 @@ exports.manageUsers = async (req,res,next) => {
         userMessage = req.query.userMessage
     }
     req.session.setError = false
-    res.render('manageUsers',{userError,userMessage})
+    res.render('admin/manageUsers',{userError,userMessage})
 }
 
 exports.getUsersAjax = async (req,res,next) => {
@@ -421,7 +490,7 @@ exports.getUserDetails = async (req,res,next) => {
         delete user.password 
         const orders = await Order.countDocuments({to:user._id})
         const bids = await Bid.countDocuments({user:user._id})
-        res.render('userDetails',{_user:user,orders,bids,userError,userMessage})
+        res.render('admin/userDetails',{_user:user,orders,bids,userError,userMessage})
     } catch (error) {
         req.session.setError = true
         res.redirect('/dashboard/users?userError=Something went wrong')

@@ -1,4 +1,4 @@
-  function loadDoc(page=1,view=24,meta={}) {
+  function loadDoc(page=1,view=12,meta={}) {
     var xhttp = new XMLHttpRequest();
  
 

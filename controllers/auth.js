@@ -53,7 +53,7 @@ exports.getLogin = (req,res,next) => {
         return;
     }
 
-    res.render('login',{message,error})
+    res.render('auth/login',{message,error})
 }
 
 exports.postRegister = async (req,res,next) => {
@@ -94,7 +94,7 @@ exports.getRegister = (req,res,next) => {
         res.redirect('/dashboard')
         return;
     }
-    res.render('register',{message,error})
+    res.render('auth/register',{message,error})
 }
 
 

@@ -1,0 +1,101 @@
+<%- include('../partials/header.ejs') %>
+<%- include('../partials/sidebar.ejs') %>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <%- include('../partials/admin-navbar.ejs') %>
+
+                <!-- Begin Page Content -->
+                <div class="container ">
+                    
+                    <!-- Page Heading -->
+
+                    <div class="row">
+                        <div class="col-md-12">
+                          <% if( orderError ){ %>
+                                       
+                              <p class="alert alert-danger shadow my-2" id="" onclick="this.style.display='none'"><%= orderError %></p>  
+                            
+                        <% } %>
+                        <% if( orderMessage ){ %>
+                                       
+                          <p class="alert alert-success shadow my-2" id="" onclick="this.style.display='none'"><%= orderMessage %></p>  
+                        
+                    <% } %>
+                        </div>
+                    </div>
+                    <!-- Content Row -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3  ">
+                                    <h6 class="m-0 font-weight-bold text-primary">OrderId: <%= order._id %> 
+                                        <a href="#" class="text-right my-2 btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                                    </h6> 
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center">
+                                        <p><%= order.name %> <%= order.last_name %></p>
+                                        <p><%= order.email %></p>
+                                        <hr>
+                                        <p><%= order.country %>, <%= order.city %> , <%= order.address1  %> <%= order.address2  %>, <%= order.zip %></p>
+                                        <p>Phone: <%= order.phone %></p>
+                                        <p>Mobile: <%= order.mobile %> </p>
+                                        <hr>
+                                        <% if(order.parcelCondition !== 'in-store'){ %>
+                                        <p>Parcel Service:  <%= order.parcelService %></p>
+                                        <p>Tracking Number: <%= order.trackingNumber %></p>
+                                        <% } %>
+                                        <p>Shipping status: <span class="badge badge-<%= order.parcelCondition == 'in-transit' ? 'warning' : order.parcelCondition == 'ready' || order.parcelCondition == 'in-store' ? 'primary' : 'success' %>"><%= order.parcelCondition %></span></p>
+                                        <hr>
+                                        <p>Estimated Delivery Date: <%=  order.estimatedDeliveryDate ? order.estimatedDeliveryDate.toUTCString() : ' - ' %></p>
+                                    </div>                                   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 w-100 col-xs-push-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary"><%= order.product.name %></h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center">
+                                        <% for(let i=0;i<order.product.images.length;i++){ %>
+                                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
+                                            src="<%= order.product.images[i] %>" alt="">
+                                        <% } %>
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-md-12">
+                                    <h4 class="text-primary my-4">Product Description</h4>
+                                   
+                                    <p class="bg-light p-4" style="word-break: break-all;"><%= order.product.description %></p>
+                                    
+                                    <h4 class="text-primary my-4">Product Price Details</h4>
+                            
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-4 offset-md-2">
+                                                    <p class="text-primary p-4 bg-light text-center card shadow">Shipping Cost: <%= order.shipping ? order.shipping+" "+order.currency.symbol : '0'+order.currency.symbol %></p>
+                                                </div>
+                                                <div class="col-md-4 ">
+                                                    <p class="text-primary p-4 bg-light text-center card shadow">Total: <%= order.product.end_price+" "+order.product.currency.symbol %></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+<%- include('../partials/footer.ejs') %>

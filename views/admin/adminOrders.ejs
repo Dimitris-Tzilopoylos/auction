@@ -1,12 +1,12 @@
-<%- include('partials/header.ejs') %>
-<%- include('partials/sidebar.ejs') %>
+<%- include('../partials/header.ejs') %>
+<%- include('../partials/sidebar.ejs') %>
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
             <!-- Main Content -->
             <div id="content">
 
-                <%- include('partials/admin-navbar.ejs') %>
+                <%- include('../partials/admin-navbar.ejs') %>
        
                 <!-- Begin Page Content -->
                 <div class="container-fluid" style="position:relative">
@@ -41,10 +41,13 @@
                                     <% if(orders && orders.length > 0){ %>
                                         <% for(o of orders){ %>
                                             <div class="col-md-1">
-                                                <p class="badge badge-outline badge-primary shadow-sm p-2" id="<%= o %>" style="cursor:pointer" onclick="loadOrders(1,24,'<%= 0 %>')"><%= o %></p>    
+                                                <p class="badge badge-outline badge-primary shadow-sm p-2 w-100" id="<%= o %>" style="cursor:pointer" onclick="loadOrders(1,24,'<%= o %>')"><%= o %></p>    
                                             </div>
                                             
                                         <% } %>
+                                        <div class="col-md-1">
+                                            <p class="badge badge-outline badge-success shadow-sm p-2 w-100"  style="cursor:pointer" onclick="loadOrders(1,24)">Reset</p>    
+                                        </div>
                                     <% } %>
                                 </div>
                             </div>
@@ -106,4 +109,4 @@
             <script>
                 loadOrders()
             </script>
-            <%- include('partials/footer.ejs') %>
+            <%- include('../partials/footer.ejs') %>
