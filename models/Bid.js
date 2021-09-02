@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-
+ 
 
 const bidSchema = new mongoose.Schema({
     product:{
