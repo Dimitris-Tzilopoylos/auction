@@ -2,7 +2,7 @@ const Product = require('../models/Product')
 const Supercategory = require('../models/Supercategory')
 const Category = require('../models/Category')
 
-
+ 
 
 exports.landingPage = async (req,res,next) => {
     
