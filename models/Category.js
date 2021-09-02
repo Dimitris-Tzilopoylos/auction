@@ -8,7 +8,7 @@ const categorySchema = new mognoose.Schema({
         trim:true,
         minlength:2,
         maxlength:30,
-        unique:true
+        unique:true 
     },
     supercategory:{
         type:mognoose.Schema.Types.ObjectId,
