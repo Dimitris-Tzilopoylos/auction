@@ -1,5 +1,5 @@
 const mognoose = require('mongoose')
-
+ 
 
 const supercategorySchema = new mognoose.Schema({
     name:{
