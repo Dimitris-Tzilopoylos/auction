@@ -1,7 +1,7 @@
 
 const Supercategory = require('../models/Supercategory')
 const Product = require('../models/Product')
-
+ 
 const localCaching = async (req,res,next)=>{
         res.locals.isAuthenticated = req.session.isAuthenticated || false 
         res.locals.user = req.session.user  || {}
